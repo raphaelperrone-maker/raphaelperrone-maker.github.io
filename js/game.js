@@ -257,9 +257,11 @@ class Faction {
     while(this.hand.length<this.handSize(g)&&this.deck.length) this.hand.push(this.deck.pop());
   }
   drawOne(){ if(this.deck.length) this.hand.push(this.deck.pop()); }
-  passAndRedraw(){
+  // Passer : TOUTE la main (tuiles, bâtiments et pouvoirs) retourne dans la pioche, qui est mélangée,
+  // puis la main est reconstituée à sa taille réelle (g = partie : passif Vignerons, Bibliothèque…)
+  passAndRedraw(g){
     const n=this.hand.length; this.deck.push(...this.hand); this.hand=[];
-    shuffle(this.deck); this.drawFill(); return n;
+    shuffle(this.deck); this.drawFill(g); return n;
   }
   tilesLeft(){ return this.deck.length+this.hand.length; }
   // Niveaux déjà "acquis" = niveau qu'on a posé et dont le suiv. a déjà été joué lui-même.
@@ -681,11 +683,6 @@ class Game {
     if(this.getTerrain(row,col)==='special' && tile!=='B4') return false;
     if(stack.length>=this.effMaxStack(fi)) return false;
 
-    // ── RÈGLE SPÉCIALE : tuile 1 peut être posée sur une pile dont le sommet est un 10 ennemi ──
-    if(tile===1 && stack.length && stack[stack.length-1][0]!==f.id && stack[stack.length-1][1]===10){
-      if(f.hasPlaced) return true; // autorisé — la destruction est gérée dans place()
-    }
-
     // ── Règles de recouvrement ──
     // 2v2 : coéquipiers peuvent s'empiler
     if(this.teamMap && stack.length){
@@ -699,6 +696,9 @@ class Game {
       if(tfi===f.id) return false;
       if(this.evk()==='no_attack') return false;
       if(!f.hasPlaced) return false;
+      // Règle 1/10 : un 1 sur le 10 d'un ennemi dispense UNIQUEMENT de la comparaison de valeurs.
+      // Tout le reste s'applique (Trêve, Citadelle, Barricade, restrictions d'événement, adjacence…).
+      const oneOnTen=this.isOneOnTen(f.id,tile,tfi,tt);
       // Citadelle : case inattaquable si propriétaire actuel la contrôle
       const bonC=this.bonusCells.get(row+','+col);
       if(bonC&&bonC.owner===tfi&&bonC.type.effect==='shield') return false;
@@ -725,7 +725,7 @@ class Game {
       // Artistes : attaque à égalité seulement avec tuiles 1-5 (infiltration faible)
       const isArtEq=this.gameLevel>=3&&CLAN_TRAITS[f.id]&&CLAN_TRAITS[f.id].passif==='equalAttack'&&typeof tile==='number'&&tile<=5;
       const minToWin = isArtEq ? 0 : 1;
-      if(effTV < defTV+minToWin+defDebuff) return false;
+      if(!oneOnTen && effTV < defTV+minToWin+defDebuff) return false;
     }
 
     // ── B4 : uniquement sur les cases spéciales centrales (sans contrainte d'adjacence) ──
@@ -775,6 +775,12 @@ class Game {
     return this.adjTopOwned(row,col,f.id);
   }
 
+  // Règle 1/10 : un 1 posé sur un 10 ENNEMI (pas un allié en 2v2) détruit toute la pile
+  isOneOnTen(fid,tile,topFid,topTile){
+    if(tile!==1||topTile!==10||topFid===fid) return false;
+    return !(this.teamMap&&this.teamMap.get(fid)===this.teamMap.get(topFid));
+  }
+
   // Retourne {ico, msg} expliquant pourquoi on ne peut pas poser ici
   getPlaceRefusalReason(row,col,ti){
     const f=this.cf();
@@ -808,6 +814,9 @@ class Game {
       if(tfi===f.id) return {ico:'🚫',msg:"Déjà à vous — impossible de s'empiler dessus"};
       if(this.evk()==='no_attack') return {ico:'🛡️',msg:'Trêve sacrée — aucune attaque ce tour'};
       if(tt==='B4') return {ico:'👑',msg:'B4 est indestructible'};
+      const bonC2=this.bonusCells.get(row+','+col);
+      if(bonC2&&bonC2.owner===tfi&&bonC2.type.effect==='shield') return {ico:'🏰',msg:'Citadelle — case inattaquable'};
+      if(this.fortifiedCells&&this.fortifiedCells.has(`${row},${col}`)) return {ico:'🧀',msg:'Barricade de fromage — case inattaquable ce tour'};
       const ftfi=this.ff(tfi);
       if(ftfi&&ftfi.shielded) return {ico:'🖼️',msg:`${ftfi.name} : Toile renforcée — bâtiments inattaquables`};
       let effTV=tval(tile);
@@ -817,7 +826,7 @@ class Game {
       if(isBat(tt)&&CLAN_TRAITS[tfi]&&CLAN_TRAITS[tfi].passif==='batBoost') defTV+=1;
       if(!isBat(tt)&&CLAN_TRAITS[tfi]&&CLAN_TRAITS[tfi].passif==='defBoost'&&typeof tt==='number'&&tt>=6) defTV+=1;
       const isArtEq2=CLAN_TRAITS[f.id]&&CLAN_TRAITS[f.id].passif==='equalAttack'&&typeof tile==='number'&&tile<=5;
-      if(effTV<defTV+(isArtEq2?0:1)){
+      if(!this.isOneOnTen(f.id,tile,tfi,tt) && effTV<defTV+(isArtEq2?0:1)){
         const need=defTV+(isArtEq2?0:1);
         if(CLAN_TRAITS[tfi]&&CLAN_TRAITS[tfi].passif==='defBoost'&&!isBat(tt)&&typeof tt==='number'&&tt>=6)
           return {ico:'🛡️',msg:`Tuile trop faible — ${F_NAME[tfi]} défense +1 sur les 6-10 (résiste ${defTV}) · besoin de ${need}`};
@@ -874,7 +883,7 @@ class Game {
       }
     }
     // ── RÈGLE SPÉCIALE : tuile 1 sur pile avec sommet=10 ennemi → tout détruire ──
-    if(tile===1 && stack.length && stack[stack.length-1][0]!==f.id && stack[stack.length-1][1]===10){
+    if(stack.length && this.isOneOnTen(f.id,tile,stack[stack.length-1][0],stack[stack.length-1][1])){
       // Effacer tous les bâtiments de la pile des registres
       for(const [ef2,et2] of stack){ const ef2fac=this.ff(ef2); if(ef2fac&&isBat(et2)) delete ef2fac.batOnBoard[`${row},${col}`]; }
       this.board[row][col]=[];
@@ -1047,8 +1056,8 @@ class Game {
   }
 
   passTurn(){
-    const f=this.cf(); const n=f.passAndRedraw();
-    this.event=`⏭️ ${f.name} passe — défausse ${n} tuile(s), repioche !`; this.sel=null;
+    const f=this.cf(); const n=f.passAndRedraw(this);
+    this.event=`⏭️ ${f.name} passe — remélange ses ${n} cartes et repioche !`; this.sel=null;
     this._endTurn();
   }
 
@@ -1095,7 +1104,7 @@ class Game {
       const f=this.cf();
       if(f.tilesLeft()===0){ const step=this.evk()==='reverse_order'?-1:1; this.curIdx=(this.curIdx+step+this.np)%this.np; this.cur=this.turnOrder[this.curIdx]; continue; }
       if(this.validMoves(this.cur).length) return;
-      const n=f.passAndRedraw(); this.event=`🔄 ${f.name} sans coup — repioche !`; return;
+      const n=f.passAndRedraw(this); this.event=`🔄 ${f.name} sans coup — repioche !`; return;
     }
     this.over=true;
   }
