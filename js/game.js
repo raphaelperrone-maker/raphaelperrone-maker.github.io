@@ -7,7 +7,7 @@ const BONUS_CELL_TYPES = [
   {id:'citadelle', ico:'🏰',name:'Citadelle',         color:'#8060c0',desc:"Vos tuiles sur cette case sont inattaquables.",effect:'shield'},
   {id:'carrefour', ico:'🗺️',name:'Carrefour',         color:'#40a0c0',desc:"Cette case vaut 3 pts au lieu de 1.",         effect:'triple_pts'},
   {id:'biblio',    ico:'📖',name:'Bibliothèque',      color:'#6080c0',desc:"Main maximale +1 tant que vous la contrôlez (Vignerons : 7 cartes, autres : 6).",effect:'hand_max'},
-  {id:'entrepot',  ico:'📦',name:'Entrepôt',          color:'#a06020',desc:"Votre pile max passe à 5 partout.",           effect:'stack_bonus'},
+  {id:'entrepot',  ico:'📦',name:'Entrepôt',          color:'#535c6d',desc:"Votre pile max passe à 5 partout.",           effect:'stack_bonus'},
   {id:'monument',  ico:'⭐',name:'Monument',          color:'#c0a000',desc:"+3 pts bonus à la fin de partie.",            effect:'end_bonus'},
 ];
 
@@ -1316,7 +1316,7 @@ function drawBoard(){
 
     // Base color selon terrain
     let base,rim;
-    if(bombed){ base='#180e04'; rim='#0e0702'; }
+    if(bombed){ base='#0b0d11'; rim='#0e0702'; }
     else if(terrain==='lake')   { base='#4f87a8'; rim='#3a6a88'; }
     else if(terrain==='mount')  { base='#7d7889'; rim='#5c5868'; }
     else if(terrain==='village'){ base='#6d9150'; rim='#4d6e36'; }
@@ -1378,9 +1378,9 @@ function drawBoard(){
       } else if(terrain==='village'){
         ctx.fillStyle='#efe4c6'; ctx.fillRect(cx-6,cy-3,12,9);
         ctx.fillStyle='#b5503a'; ctx.beginPath(); ctx.moveTo(cx-8,cy-3); ctx.lineTo(cx,cy-10); ctx.lineTo(cx+8,cy-3); ctx.closePath(); ctx.fill();
-        ctx.fillStyle='#f5e3a0'; ctx.font='bold 9px Cinzel,serif'; ctx.fillText('2',cx,cy+14);
+        ctx.fillStyle='#f5e3a0'; ctx.font='bold 9px Inter,sans-serif'; ctx.fillText('2',cx,cy+14);
       } else if(terrain==='special'){
-        ctx.fillStyle='#e6dcf5'; ctx.font='bold 11px Cinzel,serif'; ctx.fillText('B4',cx,cy+1);
+        ctx.fillStyle='#e6dcf5'; ctx.font='bold 11px Inter,sans-serif'; ctx.fillText('B4',cx,cy+1);
       } else if(terrain==='start'){
         const so=G.startOwnerOf?G.startOwnerOf(row,col):null;
         ctx.fillStyle=(so!==null&&F_COLOR[so])?F_COLOR[so]:'#cfe6b8'; ctx.font='16px serif'; ctx.fillText('★',cx,cy+1);
@@ -1408,7 +1408,7 @@ function drawBoard(){
       ctx.font='11px serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
       ctx.fillText(bon.type.ico, cx-HEX_R+15, cy-HEX_R+15);
       if(bon.owner!==null){
-        ctx.fillStyle=F_COLOR[bon.owner]; ctx.font='bold 7px Cinzel,serif';
+        ctx.fillStyle=F_COLOR[bon.owner]; ctx.font='bold 7px Inter,sans-serif';
         ctx.textAlign='center'; ctx.textBaseline='middle';
         ctx.fillText('★', cx-HEX_R+15, cy-HEX_R+26);
       }
@@ -1447,7 +1447,7 @@ function drawBoard(){
         ctx.save(); ctx.globalAlpha=0.55; drawHex(ctx,cx,cy,HEX_R-8,null,cb,1); ctx.restore();
         drawIcon(ctx,BAT_KEY[tt],cx,cy-5,18,shade(cb,0.1));
         ctx.textAlign='center'; ctx.textBaseline='top';
-        ctx.fillStyle='#f4cf5a'; ctx.font='bold 9px Cinzel,serif'; ctx.fillText(BAT_VAL[tt],cx,cy+7);
+        ctx.fillStyle='#f4cf5a'; ctx.font='bold 9px Inter,sans-serif'; ctx.fillText(BAT_VAL[tt],cx,cy+7);
         ctx.fillStyle='rgba(255,255,255,0.72)'; ctx.font='7px Inter,sans-serif';
         const lbl=BAT_LABEL[tfi][tt]; ctx.fillText(lbl.length>9?lbl.slice(0,8)+'…':lbl,cx,cy+17);
       } else {
@@ -1457,7 +1457,7 @@ function drawBoard(){
         drawHex(ctx,cx,cy,HEX_R-4,null,shade(c0,0.15),2);
         drawIcon(ctx,CLAN_ICON_KEY[tfi],cx,cy-12,11,shade(c0,0.2));
         ctx.save(); ctx.shadowColor='rgba(0,0,0,0.5)'; ctx.shadowBlur=3; ctx.shadowOffsetY=1;
-        ctx.fillStyle='#fff'; ctx.font='bold 18px Cinzel,serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+        ctx.fillStyle='#fff'; ctx.font='bold 18px Inter,sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
         ctx.fillText(tt,cx,cy+5); ctx.restore();
       }
 
@@ -1468,7 +1468,7 @@ function drawBoard(){
         const bx=cx+HEX_R-12, by=cy-HEX_R+12;
         ctx.beginPath(); ctx.arc(bx,by,9,0,Math.PI*2);
         ctx.fillStyle='#1a0a02'; ctx.fill(); ctx.strokeStyle='#C8960C'; ctx.lineWidth=2; ctx.stroke();
-        ctx.fillStyle='#C8960C'; ctx.font='bold 8px Cinzel,serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+        ctx.fillStyle='#C8960C'; ctx.font='bold 8px Inter,sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
         ctx.fillText(n,bx,by+1);
         // Badge bonus pts pile (+1/+2/+3)
         if(pBonus>0){
@@ -1786,25 +1786,23 @@ function showDraftOverlay(f, avail, onPick){
   if(!ov){
     ov=document.createElement('div');
     ov.id='draft-overlay';
-    ov.style.cssText='position:fixed;inset:0;background:rgba(10,5,2,0.82);z-index:9000;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;';
     document.body.appendChild(ov);
   }
+  const DIR={NW:['↖','Nord-ouest'],NE:['↗','Nord-est'],SW:['↙','Sud-ouest'],SE:['↘','Sud-est']};
   ov.innerHTML=`
-    <div style="font-family:'Cinzel',serif;font-size:1.4rem;color:#ffd700;text-align:center;margin-bottom:8px">
-      ${f.ico||'⚑'} ${f.name} — Choisissez votre case de départ
+    <div class="draft-card">
+      <div class="draft-clan">${F_ICO[f.id]}</div>
+      <div class="draft-title">${f.name}</div>
+      <div class="draft-sub">Choisissez votre case de départ</div>
+      <div class="draft-grid">
+        ${avail.map(({q})=>`
+          <button class="draft-btn" onclick="window._draftPick('${q}')">
+            <span class="draft-arrow">${DIR[q]?DIR[q][0]:'★'}</span>
+            <span>${DIR[q]?DIR[q][1]:q}</span>
+          </button>`).join('')}
+      </div>
+      <div class="draft-hint">Les adversaires choisissent ensuite</div>
     </div>
-    <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
-      ${avail.map(({q,pos})=>`
-        <button onclick="window._draftPick('${q}')"
-          style="background:linear-gradient(135deg,#2a4010,#1a2808);border:2px solid #ffd700;
-          color:#ffd700;font-family:'Cinzel',serif;font-size:1rem;padding:14px 22px;
-          border-radius:8px;cursor:pointer;min-width:100px"
-          onmouseover="this.style.background='linear-gradient(135deg,#4a7020,#2a4010)'"
-          onmouseout="this.style.background='linear-gradient(135deg,#2a4010,#1a2808)'">
-          ⭐ ${q}<br><span style="font-size:0.75rem;opacity:0.7">(${pos[0]},${pos[1]})</span>
-        </button>`).join('')}
-    </div>
-    <div style="font-size:0.8rem;color:#a09070;margin-top:4px">Les adversaires choisissent ensuite</div>
   `;
   window._draftPick=(q)=>onPick(q);
   ov.style.display='flex';
@@ -1955,7 +1953,7 @@ function renderHand(){
       card.innerHTML=`
         <div class="card-badge" style="background:${pc.color}88;border-bottom:1px solid ${pc.color}">✦ POUVOIR ✦</div>
         <div class="card-ico" style="margin-top:16px;font-size:1.6rem">${pc.ico}</div>
-        <div class="card-name" style="color:#fff;font-weight:700;margin-top:4px;font-size:0.6rem;letter-spacing:0.04em;font-family:'Cinzel',serif">${pc.name}</div>`;
+        <div class="card-name" style="color:#fff;font-weight:700;margin-top:4px;font-size:0.6rem;letter-spacing:0.04em;font-family:var(--font-ui)">${pc.name}</div>`;
       card.addEventListener('click',()=>selectPower(i));
       card.addEventListener('mouseenter', e=>showPowerTooltip(pc, e));
       card.addEventListener('mousemove',  e=>movePowerTooltip(e));
@@ -1977,11 +1975,11 @@ function renderHand(){
       const numOk=!((evk==='only_even'&&tile%2!==0)||(evk==='only_odd'&&tile%2===0));
       if(!numOk) card.classList.add('disabled');
       if(isSel) card.classList.add('selected');
-      card.style.background=isSel?`linear-gradient(160deg,${f.color},${f.dark})`:'linear-gradient(160deg,#2a1808,#1a0e04)';
+      card.style.background=isSel?`linear-gradient(160deg,${f.color},${f.dark})`:'linear-gradient(160deg,#14181e,#0c0e12)';
       card.style.borderColor=isSel?'#C8960C':f.color;
       card.innerHTML=`
         <div class="card-ico" style="margin-top:4px;font-size:1.2rem">${F_ICO[f.id]}</div>
-        <div class="card-val" style="color:${isSel?'#1a0e04':f.color}">${tile}</div>`;
+        <div class="card-val" style="color:${isSel?'#0c0e12':f.color}">${tile}</div>`;
       if(numOk) card.addEventListener('click',()=>selectTile(i));
     }
     container.appendChild(card);
@@ -2018,7 +2016,7 @@ function renderRightPanel(){
     d.style.cssText=`display:flex;align-items:center;gap:6px;padding:3px 4px;border-radius:4px;background:rgba(255,255,255,0.03)`;
     d.innerHTML=`<span style="color:${F_COLOR[f2.id]}">${F_ICO[f2.id]}</span>
       <span style="flex:1;font-size:0.8rem;color:${F_COLOR[f2.id]}">${f2.name}</span>
-      <span style="font-family:'Cinzel',serif;font-size:0.9rem;color:${F_COLOR[f2.id]}">${sc[f2.id]||0} pts</span>`;
+      <span style="font-family:var(--font-ui);font-size:0.9rem;color:${F_COLOR[f2.id]}">${sc[f2.id]||0} pts</span>`;
     sd.appendChild(d);
   }
 
@@ -2032,7 +2030,7 @@ function renderRightPanel(){
     document.getElementById('deck-info').after(pwrDiv); }
   if(f.myPowers&&f.myPowers.length){
     const pwrHtml=f.myPowers.map(p=>`<div style="display:flex;align-items:center;gap:4px;font-size:0.75rem;margin-top:2px;opacity:${f.hand.includes(p)||f.deck.includes(p)?1:0.35}"><span>${p.ico}</span><span style="color:#c084fc">${p.name}</span></div>`).join('');
-    pwrDiv.innerHTML=`<div style="font-family:'Cinzel',serif;font-size:0.62rem;color:var(--or);letter-spacing:0.08em;margin-bottom:2px">MES POUVOIRS</div>${pwrHtml}`;
+    pwrDiv.innerHTML=`<div style="font-family:var(--font-ui);font-size:0.62rem;color:var(--or);letter-spacing:0.08em;margin-bottom:2px">MES POUVOIRS</div>${pwrHtml}`;
   } else pwrDiv.innerHTML='';
 
   // Bonus de cases actifs
@@ -2043,7 +2041,7 @@ function renderRightPanel(){
   let bonHtml='';
   if(G.bonusCells) for(const [,b] of G.bonusCells)
     if(b.owner===f.id) bonHtml+=`<div style="display:flex;align-items:center;gap:4px;font-size:0.75rem;margin-top:2px"><span>${b.type.ico}</span><span style="color:${b.type.color}">${b.type.name}</span></div>`;
-  bonDiv.innerHTML=bonHtml?`<div style="font-family:'Cinzel',serif;font-size:0.62rem;color:var(--or);letter-spacing:0.08em;margin-top:4px;margin-bottom:2px">BONUS ACTIFS</div>${bonHtml}`:'';
+  bonDiv.innerHTML=bonHtml?`<div style="font-family:var(--font-ui);font-size:0.62rem;color:var(--or);letter-spacing:0.08em;margin-top:4px;margin-bottom:2px">BONUS ACTIFS</div>${bonHtml}`:'';
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -2385,7 +2383,7 @@ function showVictory(){
     const medal=rank===0?'🥇':rank===1?'🥈':rank===2?'🥉':'';
     div.innerHTML=`
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-        <div style="color:${F_COLOR[fid]};font-family:'Cinzel',serif;font-weight:700;font-size:0.95rem">${F_ICO[fid]} ${f.name}${isWinner?' 🏆':''}</div>
+        <div style="color:${F_COLOR[fid]};font-family:var(--font-ui);font-weight:700;font-size:0.95rem">${F_ICO[fid]} ${f.name}${isWinner?' 🏆':''}</div>
         <div style="font-size:1.1rem">${medal}</div>
       </div>
       <div style="font-size:1.6rem;font-weight:800;color:${F_COLOR[fid]};text-align:center;margin:4px 0">${d.total} pts</div>
@@ -2644,134 +2642,51 @@ function _mCenter(row,col,lay){
 }
 
 const MAP_COLORS = {
-  prairie:{b:'#4a7428',r:'#3a5818',bd:null,bw:1},
-  lake:   {b:'#1a6a8a',r:'#0e4a6a',bd:null,bw:1},
-  mount:  {b:'#5a5070',r:'#3a3050',bd:null,bw:1},
-  village:{b:'#4a6a20',r:'#2a4a10',bd:'#e8c040',bw:3.5},
-  special:{b:'#3a0820',r:'#1a0410',bd:'#a060d8',bw:3},
-  start:  {b:'#3a5020',r:'#2a3818',bd:'#80c060',bw:2},
+  prairie:{b:'#6a8f4e',r:'#4d6e36',bd:null,bw:1},
+  lake:   {b:'#4f87a8',r:'#3a6a88',bd:null,bw:1},
+  mount:  {b:'#7d7889',r:'#5c5868',bd:null,bw:1},
+  village:{b:'#6d9150',r:'#4d6e36',bd:'#d9b44a',bw:2},
+  special:{b:'#4b3a6b',r:'#322748',bd:'#9a82c8',bw:2},
+  start:  {b:'#56733f',r:'#3d5530',bd:'#cfe6b8',bw:2},
 };
 
+// Mini-rendu sobre (même langage visuel que le plateau principal)
 function _mRenderTerrain(ctx,cx,cy,R,terrain,row,col){
-  const seed=row*137+col*71;
-  const rng=_mRng(seed);
   cx=Math.round(cx); cy=Math.round(cy);
-
-  if(terrain==='prairie'||terrain==='start'){
-    // Herbe + arbres
-    ctx.save();ctx.globalAlpha=.35;_mHex(ctx,cx,cy,R-3,'#58aa30');ctx.restore();
-    ctx.save();ctx.globalAlpha=.55;
-    for(let i=0;i<8;i++){
-      const a=(seed*41+i*97)%628/100,rad=2+(seed*13+i*37)%(R>>2);
-      const tx=cx+Math.cos(a)*rad,ty=cy+Math.sin(a)*rad;
-      ctx.fillStyle=(seed+i)%3===0?'#88dd44':(seed+i)%3===1?'#5ab828':'#70c838';
-      ctx.beginPath();ctx.ellipse(tx,ty,2.0,1.3,a,0,Math.PI*2);ctx.fill();
+  ctx.save(); ctx.lineCap='round'; ctx.lineJoin='round'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  const u=R/16; // unité relative à la taille de l'hexagone
+  if(terrain==='lake'){
+    ctx.globalAlpha=.4; ctx.strokeStyle='#d6ecf7'; ctx.lineWidth=Math.max(.8,u*1.1);
+    for(const dy of [-5,0,5]){
+      ctx.beginPath(); ctx.moveTo(cx-8*u,cy+dy*u);
+      ctx.quadraticCurveTo(cx-4*u,cy+(dy-3)*u,cx,cy+dy*u); ctx.quadraticCurveTo(cx+4*u,cy+(dy+3)*u,cx+8*u,cy+dy*u); ctx.stroke();
     }
-    ctx.restore();
-    if(seed%3===0){
-      ctx.save();ctx.globalAlpha=.85;
-      ctx.fillStyle='#7a4020';ctx.fillRect(cx-1,cy,2.5,R*.35);
-      ctx.fillStyle=seed%2===0?'#2a8830':'#388c1a';
-      ctx.beginPath();ctx.arc(cx,cy-1,R*.28,0,Math.PI*2);ctx.fill();
-      ctx.restore();
-    }
-    if(terrain==='start'){
-      ctx.save();ctx.globalAlpha=.70;
-      const bp=_mHexPts(cx,cy,R-4);ctx.beginPath();ctx.moveTo(bp[0][0],bp[0][1]);
-      for(let i=1;i<6;i++)ctx.lineTo(bp[i][0],bp[i][1]);ctx.closePath();
-      ctx.strokeStyle='#ffd700';ctx.lineWidth=2;ctx.stroke();ctx.restore();
-      ctx.save();ctx.globalAlpha=.88;ctx.fillStyle='#ffd700';
-      ctx.beginPath();
-      for(let pt=0;pt<8;pt++){const a=pt*Math.PI/4-Math.PI/8,r2=pt%2===0?R*.15:R*.07;
-        const xp=cx+Math.cos(a)*r2,yp=cy+Math.sin(a)*r2;pt===0?ctx.moveTo(xp,yp):ctx.lineTo(xp,yp);}
-      ctx.closePath();ctx.fill();ctx.restore();
-    }
-  } else if(terrain==='lake'){
-    const lg=ctx.createRadialGradient(cx-2,cy-2,1,cx,cy,R);
-    lg.addColorStop(0,'#38b8e8');lg.addColorStop(1,'#0e5888');
-    const lp=_mHexPts(cx,cy,R-3);
-    ctx.save();ctx.globalAlpha=.82;ctx.fillStyle=lg;
-    ctx.beginPath();ctx.moveTo(lp[0][0],lp[0][1]);for(let i=1;i<6;i++)ctx.lineTo(lp[i][0],lp[i][1]);ctx.closePath();ctx.fill();ctx.restore();
-    ctx.save();ctx.globalAlpha=.3;ctx.strokeStyle='#a8e8ff';ctx.lineWidth=.8;
-    for(let dy=-R*.28;dy<=R*.28;dy+=R*.18){
-      ctx.beginPath();ctx.moveTo(cx-R*.4,cy+dy);
-      ctx.bezierCurveTo(cx-R*.2,cy+dy-2,cx+R*.2,cy+dy+2,cx+R*.4,cy+dy);ctx.stroke();}
-    ctx.restore();
-    ctx.save();ctx.globalAlpha=.3;ctx.fillStyle='#d8f4ff';
-    ctx.beginPath();ctx.ellipse(cx-R*.1,cy-R*.18,R*.18,R*.08,Math.PI/6,0,Math.PI*2);ctx.fill();ctx.restore();
-    const s2=row*100+col;
-    ctx.save();ctx.globalAlpha=.75;ctx.fillStyle='#28a848';ctx.strokeStyle='#186028';ctx.lineWidth=.6;
-    ctx.beginPath();ctx.arc(cx+(s2%4)-1.5,cy+(s2%3)-1,R*.1,0,Math.PI*2);ctx.fill();ctx.stroke();
-    ctx.strokeStyle='#186028';ctx.beginPath();ctx.moveTo(cx+(s2%4)-1.5,cy+(s2%3)-1);ctx.lineTo(cx+(s2%4)-1.5,cy+(s2%3)-1-R*.12);ctx.stroke();
-    ctx.fillStyle='#ff5888';ctx.beginPath();ctx.arc(cx+(s2%4)-1.5,cy+(s2%3)-R*.1,R*.055,0,Math.PI*2);ctx.fill();ctx.restore();
   } else if(terrain==='mount'){
-    const ms=(row*17+col*31)%3;
-    const pal=[{b0:'#c0c8e8',b1:'#6878a8',r:'#d8e0f0',p:'#f8f8ff',ps:'#a0a8d0'},
-               {b0:'#708050',b1:'#304020',r:'#90a860',p:'#a8b870',ps:'#506030'},
-               {b0:'#a06040',b1:'#501808',r:'#d08060',p:'#e8c0a0',ps:'#904020'}][ms];
-    const mg=ctx.createRadialGradient(cx-3,cy-3,1,cx,cy,R);
-    mg.addColorStop(0,pal.b0);mg.addColorStop(1,pal.b1);
-    const mh=_mHexPts(cx,cy,R-3);
-    ctx.save();ctx.globalAlpha=.8;ctx.fillStyle=mg;
-    ctx.beginPath();ctx.moveTo(mh[0][0],mh[0][1]);for(let i=1;i<6;i++)ctx.lineTo(mh[i][0],mh[i][1]);ctx.closePath();ctx.fill();ctx.restore();
-    ctx.save();ctx.globalAlpha=.3;ctx.strokeStyle=pal.r;ctx.lineWidth=1;
-    for(let ri=.6;ri>=.2;ri-=.2){
-      ctx.beginPath();for(let ai=0;ai<=20;ai++){
-        const a=ai/20*Math.PI*2,jt=Math.sin(a*4+row*.5)*1.5;
-        const rx=cx+Math.cos(a)*(R*ri+jt),ry=cy+Math.sin(a)*(R*ri+jt)*.75;
-        ai===0?ctx.moveTo(rx,ry):ctx.lineTo(rx,ry);}
-      ctx.closePath();ctx.stroke();}
-    ctx.restore();
-    ctx.save();ctx.globalAlpha=.9;ctx.fillStyle=pal.p;ctx.strokeStyle=pal.ps;ctx.lineWidth=.8;
-    ctx.beginPath();ctx.moveTo(cx,cy-R*.44);ctx.lineTo(cx-R*.28,cy+R*.16);ctx.lineTo(cx+R*.28,cy+R*.16);ctx.closePath();ctx.fill();ctx.stroke();
-    if(ms===0){ctx.fillStyle='rgba(255,255,255,.92)';ctx.beginPath();ctx.moveTo(cx,cy-R*.44);ctx.lineTo(cx-R*.12,cy-R*.18);ctx.lineTo(cx+R*.12,cy-R*.18);ctx.closePath();ctx.fill();}
-    ctx.restore();
+    ctx.fillStyle='#4a4558'; ctx.beginPath();
+    ctx.moveTo(cx-10*u,cy+7*u); ctx.lineTo(cx-2.5*u,cy-8*u); ctx.lineTo(cx+1.5*u,cy+1*u); ctx.lineTo(cx+5*u,cy-3.5*u); ctx.lineTo(cx+10*u,cy+7*u); ctx.closePath(); ctx.fill();
+    ctx.fillStyle='#eceaf3'; ctx.beginPath();
+    ctx.moveTo(cx-2.5*u,cy-8*u); ctx.lineTo(cx-6*u,cy-1*u); ctx.lineTo(cx-2.5*u,cy-3*u); ctx.lineTo(cx,cy-1*u); ctx.closePath(); ctx.fill();
   } else if(terrain==='village'){
-    ctx.save();ctx.globalAlpha=.32;_mHex(ctx,cx,cy,R-3,'#80cc40');ctx.restore();
-    ctx.save();ctx.globalAlpha=.9;
-    ctx.fillStyle='#d8c880';ctx.strokeStyle='#a09058';ctx.lineWidth=.4;
-    ctx.beginPath();ctx.arc(cx,cy+R*.06,R*.22,0,Math.PI*2);ctx.fill();ctx.stroke();
-    ctx.strokeStyle='#c0a860';ctx.lineWidth=1.2;
-    ctx.beginPath();ctx.moveTo(cx-R*.4,cy+R*.06);ctx.lineTo(cx+R*.4,cy+R*.06);ctx.stroke();
-    ctx.beginPath();ctx.moveTo(cx,cy-R*.36);ctx.lineTo(cx,cy+R*.42);ctx.stroke();
-    ctx.fillStyle='#e8dcc8';ctx.strokeStyle='#705828';ctx.lineWidth=.7;
-    ctx.fillRect(cx-R*.1,cy-R*.28,R*.2,R*.35);ctx.strokeRect(cx-R*.1,cy-R*.28,R*.2,R*.35);
-    ctx.fillRect(cx-R*.2,cy-R*.08,R*.4,R*.12);ctx.strokeRect(cx-R*.2,cy-R*.08,R*.4,R*.12);
-    ctx.beginPath();ctx.arc(cx,cy+R*.06,R*.1,0,Math.PI*2);ctx.fill();ctx.stroke();
-    ctx.fillStyle='#988060';ctx.beginPath();ctx.arc(cx,cy-R*.28,R*.1,0,Math.PI*2);ctx.fill();
-    ctx.fillStyle='#c83818';ctx.beginPath();ctx.moveTo(cx-R*.1,cy-R*.28);ctx.lineTo(cx,cy-R*.44);ctx.lineTo(cx+R*.1,cy-R*.28);ctx.closePath();ctx.fill();
-    [[cx-R*.32,cy-R*.16],[cx+R*.14,cy-R*.16]].forEach(([hx,hy],hi)=>{
-      ctx.fillStyle='#f0e0c0';ctx.strokeStyle='#907050';ctx.lineWidth=.5;
-      ctx.fillRect(hx,hy,R*.2,R*.16);ctx.strokeRect(hx,hy,R*.2,R*.16);
-      ctx.fillStyle=['#d86840','#d89040'][hi];ctx.fillRect(hx,hy,R*.2,R*.07);});
-    ctx.restore();
+    ctx.fillStyle='#efe4c6'; ctx.fillRect(cx-5*u,cy-2*u,10*u,8*u);
+    ctx.fillStyle='#b5503a'; ctx.beginPath(); ctx.moveTo(cx-7*u,cy-2*u); ctx.lineTo(cx,cy-9*u); ctx.lineTo(cx+7*u,cy-2*u); ctx.closePath(); ctx.fill();
   } else if(terrain==='special'){
-    const sg=ctx.createRadialGradient(cx,cy,2,cx,cy,R-3);
-    sg.addColorStop(0,'#3a2880');sg.addColorStop(1,'#0e0c28');
-    const sp=_mHexPts(cx,cy,R-3);
-    ctx.save();ctx.globalAlpha=.9;ctx.fillStyle=sg;
-    ctx.beginPath();ctx.moveTo(sp[0][0],sp[0][1]);for(let i=1;i<6;i++)ctx.lineTo(sp[i][0],sp[i][1]);ctx.closePath();ctx.fill();ctx.restore();
-    ctx.save();ctx.globalAlpha=.85;ctx.strokeStyle='#ffd700';ctx.lineWidth=2;
-    const sr=_mHexPts(cx,cy,R-6);ctx.beginPath();ctx.moveTo(sr[0][0],sr[0][1]);
-    for(let i=1;i<6;i++)ctx.lineTo(sr[i][0],sr[i][1]);ctx.closePath();ctx.stroke();ctx.restore();
-    ctx.save();ctx.globalAlpha=.85;
-    for(let i=0;i<8;i++){const a=i/8*Math.PI*2,a2=(i+.5)/8*Math.PI*2;
-      ctx.fillStyle=i%2===0?'#ffd700':'#c0a000';ctx.beginPath();ctx.moveTo(cx,cy);
-      ctx.lineTo(cx+Math.cos(a)*R*.44,cy+Math.sin(a)*R*.44);
-      ctx.lineTo(cx+Math.cos(a2)*R*.18,cy+Math.sin(a2)*R*.18);ctx.closePath();ctx.fill();}
-    ctx.restore();
-    ctx.save();ctx.globalAlpha=.95;ctx.fillStyle='#fff';ctx.font=`bold ${Math.max(8,R*.22)}px sans-serif`;
-    ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('B4',cx,cy+1);ctx.restore();
+    ctx.fillStyle='#e6dcf5'; ctx.font=`bold ${Math.max(8,10*u)}px Inter,sans-serif`; ctx.fillText('B4',cx,cy+u*.5);
+  } else if(terrain==='start'){
+    ctx.fillStyle='#cfe6b8'; ctx.font=`${Math.max(9,14*u)}px serif`; ctx.fillText('★',cx,cy+u);
+  } else if(terrain==='sanctu'){
+    ctx.fillStyle='#f3d98a'; ctx.beginPath();
+    ctx.moveTo(cx,cy-8*u); ctx.lineTo(cx+6*u,cy); ctx.lineTo(cx,cy+8*u); ctx.lineTo(cx-6*u,cy); ctx.closePath(); ctx.fill();
   }
+  ctx.restore();
 }
 
 function renderMapCanvas(ctx, terrain, W, H, hoverKey=null){
   ctx.clearRect(0,0,W,H);
   // fond bois
-  ctx.fillStyle='#2e1a0a';ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='#161b22';ctx.fillRect(0,0,W,H);
   const rng2=_mRng(42);
   for(let y=0;y<H;y+=4){if(rng2()%1>.7)continue;
-    ctx.strokeStyle=['#3a2210','#281405','#4a2e18','#221005'][Math.floor(rng2()*4)];
+    ctx.strokeStyle=['#1e232c','#281405','#272e3b','#101217'][Math.floor(rng2()*4)];
     ctx.lineWidth=.7;ctx.globalAlpha=.6;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
   ctx.globalAlpha=1;
   const lay=_mLayout(W,H);
@@ -2781,7 +2696,7 @@ function renderMapCanvas(ctx, terrain, W, H, hoverKey=null){
     const [cx,cy]=_mCenter(row,col,lay);
     const mc=MAP_COLORS[ter]||MAP_COLORS.prairie;
     // Ombre
-    ctx.save();ctx.globalAlpha=.42;_mHex(ctx,cx,cy+3,lay.R-1,'#0a0502');ctx.restore();
+    ctx.save();ctx.globalAlpha=.42;_mHex(ctx,cx,cy+3,lay.R-1,'#050607');ctx.restore();
     // Fond
     _mHex(ctx,cx,cy,lay.R-1,mc.r);
     _mHex(ctx,cx,cy,lay.R-3,mc.b);
