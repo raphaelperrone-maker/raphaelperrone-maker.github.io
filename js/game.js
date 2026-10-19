@@ -110,7 +110,8 @@ const PAD_X = HEX_R + 4, PAD_Y = Math.round(HEX_H / 2) + 4;
 const F_COLOR = ['#f5c87a','#c0394a','#5c9bd6','#e8823a'];
 const F_DARK  = ['#5a3d0a','#3a0a10','#0e2a45','#6b2e08'];
 const F_NAME  = ['Boulangers','Vignerons','Artistes','Fromagers'];
-const F_ICO   = ['🥐','🍷','🎨','🧀'];
+const F_EMO   = ['🥐','🍷','🎨','🧀'];   // emoji : textes bruts (événements, infobulles)
+const F_ICO   = [0,1,2,3].map(i=>iconSVG(CLAN_ICON_KEY[i],F_COLOR[i])); // icônes SVG : tout ce qui passe par innerHTML
 const F_CSS   = ['--f0','--f1','--f2','--f3'];
 
 const BAT_ORDER = ['B1','B2','B3','B4'];
@@ -122,12 +123,8 @@ const BAT_LABEL = [
   {B1:'Atelier',B2:'Galerie',B3:'École des Arts',B4:'Musée'},
   {B1:'Fruitière',B2:'Affinoir',B3:'Cave à Fromage',B4:'Fromagerie'},
 ];
-const BAT_ICO = [
-  {B1:'🫓',B2:'🥐',B3:'🥖',B4:'🏪'},
-  {B1:'🌿',B2:'🍇',B3:'🍾',B4:'🏰'},
-  {B1:'✏️',B2:'🖼️',B3:'🎭',B4:'🏛'},
-  {B1:'🐄',B2:'🧀',B3:'🫙',B4:'🏠'},
-];
+const BAT_KEY = {B1:'b1',B2:'b2',B3:'b3',B4:'b4'};
+const BAT_ICO = [0,1,2,3].map(f=>({B1:iconSVG('b1',F_COLOR[f]),B2:iconSVG('b2',F_COLOR[f]),B3:iconSVG('b3',F_COLOR[f]),B4:iconSVG('b4',F_COLOR[f])}));
 
 // ── Pool de 10 pouvoirs communs — chaque joueur en tire 2 au hasard au début
 const POWER_POOL = [
@@ -865,7 +862,7 @@ class Game {
     const f=this.cf(); if(ti>=f.hand.length) return false;
     const tile=f.hand[ti]; if(isPower(tile)) return false;
     if(!this.canPlace(row,col,ti)) return false;
-    this.lastMove={row,col,fid:f.id};
+    this.lastMove={row,col,fid:f.id}; this.lastMoveAt=performance.now();
     const stack=this.board[row][col];
     if(stack.length){ const [ef,et]=stack[stack.length-1];
       if(ef!==f.id){ const enemy=this.ff(ef);
@@ -893,7 +890,7 @@ class Game {
       if(tile==='B4'){
         this.lastRoundTrigger=f.id;
         this.lastRoundLeft=this.np-1;
-        this.event=`👑 ${F_ICO[f.id]} ${f.name} pose ${BAT_LABEL[f.id].B4} — DERNIER TOUR pour tous !`;
+        this.event=`👑 ${F_EMO[f.id]} ${f.name} pose ${BAT_LABEL[f.id].B4} — DERNIER TOUR pour tous !`;
       }
     }
     this._syncBonusOwner(row,col);
@@ -906,7 +903,7 @@ class Game {
         // Piocher une carte pouvoir non encore en main
         const availPow=POWER_POOL.filter(p=>!f.hand.some(h=>h&&h.id===p.id));
         if(availPow.length){ f.hand.push(availPow[Math.floor(Math.random()*availPow.length)]); }
-        this.event=`⚡ ${F_ICO[f.id]} ${f.name} contrôle le Sanctuaire — carte pouvoir obtenue !`;
+        this.event=`⚡ ${F_EMO[f.id]} ${f.name} contrôle le Sanctuaire — carte pouvoir obtenue !`;
       }
     }
     this._endTurn(); return true;
@@ -1287,15 +1284,13 @@ const BOARD_W=Math.round(PAD_X*2+GRID_SIZE*HEX_R*1.5);
 const BOARD_H=Math.round(PAD_Y*2+GRID_SIZE*HEX_H+HEX_H*0.55);
 canvas.width=BOARD_W; canvas.height=BOARD_H;
 
-let hoverCell=null;
+let hoverCell=null, _pulseRAF=0;
 
 function drawBoard(){
   if(!G) return;
   ctx.clearRect(0,0,BOARD_W,BOARD_H);
 
-  // Fond uni, sobre
-  ctx.fillStyle='#1f160d';
-  ctx.fillRect(0,0,BOARD_W,BOARD_H);
+  // Fond transparent : c'est la zone de plateau (CSS) qui fournit la couleur
 
   const f=G.cf(), sel=G.sel;
   const hasSel=sel!==null&&!G.over&&!f.isAI&&sel<f.hand.length&&!isPower(f.hand[sel]);
@@ -1360,15 +1355,11 @@ function drawBoard(){
       ctx.strokeStyle=bClr; ctx.lineWidth=3; ctx.stroke(); ctx.restore();
     }
 
-    // Shadow
-    ctx.globalAlpha=0.25;
-    drawHex(ctx,cx,cy+2,HEX_R-1,'#0a0502',null,0);
-    ctx.globalAlpha=1;
-
-    // Rim
-    drawHex(ctx,cx,cy,HEX_R-1,rim,null,0);
-    // Body
-    drawHex(ctx,cx,cy,HEX_R-3,base,bClr,bW);
+    // Ombre portée douce, corps en dégradé, liseré lumineux intérieur
+    ctx.save(); ctx.shadowColor='rgba(0,0,0,0.42)'; ctx.shadowBlur=7; ctx.shadowOffsetY=3;
+    drawHex(ctx,cx,cy,HEX_R-2,rim,null,0); ctx.restore();
+    drawHex(ctx,cx,cy,HEX_R-3,hexGrad(ctx,cy,HEX_R-3,shade(base,0.14),shade(base,-0.12)),bClr,bW);
+    ctx.save(); ctx.globalAlpha=0.16; drawHex(ctx,cx,cy,HEX_R-5.5,null,'#fff',1); ctx.restore();
 
     // ── Rendu sobre : aplat + un seul symbole par type de case ──
     if(!stack.length&&!bombed){
@@ -1449,33 +1440,25 @@ function drawBoard(){
       }
 
       if(isBat(tt)){
-        // Building
-        const bclr=BAT_CLR[tt];
-        drawHex(ctx,cx,cy,HEX_R-4,F_DARK[tfi],null,0);
-        ctx.save(); ctx.globalAlpha=0.4;
-        const pts=hexPts(cx,cy,HEX_R-4);
-        ctx.beginPath(); ctx.moveTo(pts[4][0],pts[4][1]);
-        for(let i=5;i<6;i++) ctx.lineTo(pts[i][0],pts[i][1]);
-        ctx.lineTo(pts[0][0],pts[0][1]); ctx.lineTo(pts[1][0],pts[1][1]);
-        ctx.lineTo(cx,cy); ctx.closePath(); ctx.fillStyle=bclr; ctx.fill();
-        ctx.restore();
-        drawHex(ctx,cx,cy,HEX_R-4,null,bclr,2);
-        ctx.font=`${HEX_R-4}px serif`; ctx.textAlign='center'; ctx.textBaseline='middle';
-        ctx.fillText(BAT_ICO[tfi][tt],cx,cy-4);
-        ctx.fillStyle='#f0c040'; ctx.font=`bold 9px Cinzel,serif`; ctx.textAlign='center'; ctx.textBaseline='top';
-        ctx.fillText(BAT_VAL[tt],cx,cy+10);
-        ctx.fillStyle='rgba(255,255,255,0.7)'; ctx.font=`7px serif`; ctx.textAlign='center'; ctx.textBaseline='top';
-        const lbl=BAT_LABEL[tfi][tt]; ctx.fillText(lbl.length>8?lbl.slice(0,7)+'…':lbl,cx,cy+20);
+        // Bâtiment : médaillon sombre, anneau de niveau, icône vectorielle du clan
+        const bclr=BAT_CLR[tt], cb=F_COLOR[tfi];
+        drawHex(ctx,cx,cy,HEX_R-4,hexGrad(ctx,cy,HEX_R-4,shade(F_DARK[tfi],0.12),shade(F_DARK[tfi],-0.3)),null,0);
+        drawHex(ctx,cx,cy,HEX_R-4,null,bclr,2.5);
+        ctx.save(); ctx.globalAlpha=0.55; drawHex(ctx,cx,cy,HEX_R-8,null,cb,1); ctx.restore();
+        drawIcon(ctx,BAT_KEY[tt],cx,cy-5,18,shade(cb,0.1));
+        ctx.textAlign='center'; ctx.textBaseline='top';
+        ctx.fillStyle='#f4cf5a'; ctx.font='bold 9px Cinzel,serif'; ctx.fillText(BAT_VAL[tt],cx,cy+7);
+        ctx.fillStyle='rgba(255,255,255,0.72)'; ctx.font='7px Inter,sans-serif';
+        const lbl=BAT_LABEL[tfi][tt]; ctx.fillText(lbl.length>9?lbl.slice(0,8)+'…':lbl,cx,cy+17);
       } else {
-        // Tuile numérique : aplat couleur de clan, valeur en grand, petite icône
-        drawHex(ctx,cx,cy,HEX_R-4,F_DARK[tfi],null,0);
-        ctx.save(); ctx.globalAlpha=0.35;
-        drawHex(ctx,cx,cy,HEX_R-4,F_COLOR[tfi],null,0); ctx.restore();
-        drawHex(ctx,cx,cy,HEX_R-4,null,F_COLOR[tfi],2);
-        ctx.font=`11px serif`; ctx.textAlign='center'; ctx.textBaseline='middle';
-        ctx.fillText(F_ICO[tfi],cx,cy-12);
-        ctx.fillStyle='#fff8e6'; ctx.font=`bold 18px Cinzel,serif`; ctx.textAlign='center'; ctx.textBaseline='middle';
-        ctx.fillText(tt,cx,cy+5);
+        // Tuile numérique : dégradé du clan, icône vectorielle, valeur en grand
+        const c0=F_COLOR[tfi];
+        drawHex(ctx,cx,cy,HEX_R-4,hexGrad(ctx,cy,HEX_R-4,shade(c0,-0.18),shade(c0,-0.55)),null,0);
+        drawHex(ctx,cx,cy,HEX_R-4,null,shade(c0,0.15),2);
+        drawIcon(ctx,CLAN_ICON_KEY[tfi],cx,cy-12,11,shade(c0,0.2));
+        ctx.save(); ctx.shadowColor='rgba(0,0,0,0.5)'; ctx.shadowBlur=3; ctx.shadowOffsetY=1;
+        ctx.fillStyle='#fff'; ctx.font='bold 18px Cinzel,serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+        ctx.fillText(tt,cx,cy+5); ctx.restore();
       }
 
       // Pile badge — profondeur + bonus pts
@@ -1516,10 +1499,27 @@ function drawBoard(){
     ctx.save();
     drawHex(ctx,lx,ly,HEX_R-1,null,'rgba(255,255,255,0.9)',3);
     drawHex(ctx,lx,ly,HEX_R-4,null,F_COLOR[lm.fid]||'#fff',2);
+    // Onde de pose : un anneau qui s'étend et s'efface (700 ms)
+    const t=Math.min(1,(performance.now()-(G.lastMoveAt||0))/700);
+    if(t<1){
+      ctx.globalAlpha=1-t; drawHex(ctx,lx,ly,HEX_R+t*12,null,F_COLOR[lm.fid]||'#fff',2.5);
+      if(!_pulseRAF) _pulseRAF=requestAnimationFrame(()=>{ _pulseRAF=0; drawBoard(); });
+    }
     ctx.restore();
   }
 }
 
+// Éclaircit (amt>0) ou assombrit (amt<0) une couleur #rrggbb
+function shade(hex,amt){
+  const n=parseInt(hex.slice(1),16); let r=n>>16,g=(n>>8)&255,b=n&255;
+  const t=amt<0?0:255, k=Math.abs(amt);
+  r=Math.round(r+(t-r)*k); g=Math.round(g+(t-g)*k); b=Math.round(b+(t-b)*k);
+  return '#'+((1<<24)|(r<<16)|(g<<8)|b).toString(16).slice(1);
+}
+// Dégradé vertical sur la hauteur d'un hexagone
+function hexGrad(ctx,cy,r,top,bottom){
+  const g=ctx.createLinearGradient(0,cy-r,0,cy+r); g.addColorStop(0,top); g.addColorStop(1,bottom); return g;
+}
 function drawHex(ctx,cx,cy,r,fill,stroke,lw){
   const pts=hexPts(cx,cy,r);
   ctx.beginPath(); ctx.moveTo(pts[0][0],pts[0][1]);
@@ -1716,8 +1716,8 @@ function updateTeamAssign(){
     if(teamOf[i]===0) aFids.push(i);
     else if(teamOf[i]===1) bFids.push(i);
   }
-  document.getElementById('team-assign-a').textContent=aFids.map(i=>F_ICO[i]+' '+F_NAME[i]).join(' + ')||'—';
-  document.getElementById('team-assign-b').textContent=bFids.map(i=>F_ICO[i]+' '+F_NAME[i]).join(' + ')||'—';
+  document.getElementById('team-assign-a').innerHTML=aFids.map(i=>F_ICO[i]+' '+F_NAME[i]).join(' + ')||'—';
+  document.getElementById('team-assign-b').innerHTML=bFids.map(i=>F_ICO[i]+' '+F_NAME[i]).join(' + ')||'—';
   // Bouton start actif si 2 dans chaque équipe
   const ok=aFids.length===2&&bFids.length===2;
   document.getElementById('btn-start').disabled=!ok;
@@ -1865,7 +1865,7 @@ function renderScores(){
     const pts=document.getElementById(`sc-pts-${i}`);
     if(pts) pts.textContent=`${sc[fid]||0} pt${(sc[fid]||0)>1?'s':''}`;
     const bats=document.getElementById(`sc-bats-${i}`);
-    if(bats) bats.textContent=f.batPlaced.map(b=>BAT_ICO[fid][b]).join('');
+    if(bats) bats.innerHTML=f.batPlaced.map(b=>BAT_ICO[fid][b]).join('');
   }
   // Barre score équipe 2v2
   const tsBar=document.getElementById('team-score-bar');
@@ -1885,7 +1885,7 @@ function renderEventBar(){
   if(lrBanner){
     if(G.lastRoundTrigger!==null&&!G.over){
       lrBanner.style.display='block';
-      lrBanner.textContent=`⚔️ DERNIER TOUR — ${F_ICO[G.lastRoundTrigger]} ${F_NAME[G.lastRoundTrigger]} a posé son ${BAT_LABEL[G.lastRoundTrigger].B4} · encore ${G.lastRoundLeft} tour${G.lastRoundLeft>1?'s':''}`;
+      lrBanner.textContent=`⚔️ DERNIER TOUR — ${F_EMO[G.lastRoundTrigger]} ${F_NAME[G.lastRoundTrigger]} a posé son ${BAT_LABEL[G.lastRoundTrigger].B4} · encore ${G.lastRoundLeft} tour${G.lastRoundLeft>1?'s':''}`;
     } else { lrBanner.style.display='none'; }
   }
   // Timer de partie
@@ -1926,7 +1926,7 @@ function renderHand(){
   const pass=document.getElementById('btn-pass');
   pass.disabled=f.isAI||G.over;
   const lbl=document.getElementById('hand-label');
-  lbl.textContent=`MAIN — ${F_ICO[f.id]} ${f.name}`;
+  lbl.innerHTML=`MAIN — ${F_ICO[f.id]} ${f.name}`;
   lbl.style.color=F_COLOR[f.id];
   if(f.isAI) return;
   f.hand.forEach((tile,i)=>{
@@ -1992,7 +1992,7 @@ function renderRightPanel(){
   if(!G) return;
   const f=G.cf();
   // Current player
-  document.getElementById('panel-cur-name').textContent=`${F_ICO[f.id]} ${f.name}${f.isAI?' 🤖':''}`;
+  document.getElementById('panel-cur-name').innerHTML=`${F_ICO[f.id]} ${f.name}${f.isAI?' 🤖':''}`;
   document.getElementById('panel-cur-name').style.color=F_COLOR[f.id];
   document.getElementById('panel-cur-sub').textContent=`${f.tilesLeft()} cartes restantes · tour ${Math.floor((G.totalTurns||0)/G.np)+1}/${Math.round(G.turnLimit/G.np)}`;
 
@@ -2153,7 +2153,7 @@ canvas.addEventListener('mousemove', e=>{
     const ptsB=0; // auraPtsBonus supprimé v1.16
     let infoStr=defVal!==(isBat(tt)?tval(tt):tt)?` 🛡val.réelle:${defVal+defDebuffHere}`:'';
     if(ptsB>0) infoStr+=` ★+${ptsB}`;
-    tip.textContent=`${F_ICO[fi]} ${F_NAME[fi]} · ${isBat(tt)?'Bâtiment ':'Valeur '}${name} · Pile: ${stack.length}${infoStr}`;
+    tip.textContent=`${F_EMO[fi]} ${F_NAME[fi]} · ${isBat(tt)?'Bâtiment ':'Valeur '}${name} · Pile: ${stack.length}${infoStr}`;
     tip.style.display='block'; tip.style.left=(e.clientX+12)+'px'; tip.style.top=(e.clientY-30)+'px';
   }
 });

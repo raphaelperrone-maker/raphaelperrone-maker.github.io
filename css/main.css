@@ -967,3 +967,69 @@ html, body { background: var(--bg); }
 .btn-pass:hover { background: #3a2a1a; }
 #zoom-controls button { background: var(--surface); border-color: var(--line); color: var(--text); }
 .version-badge { background: var(--surface); border-color: var(--line); color: var(--dim); }
+
+/* ══════════ v1.28 — Habillage moderne : icônes vectorielles, verre dépoli, cartes ══════════ */
+:root {
+  --font-ui: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --r: 14px; --r-sm: 9px;
+  --glass: rgba(37,26,16,0.72); --glass-line: rgba(255,255,255,0.09);
+  --shadow: 0 8px 28px rgba(0,0,0,0.38);
+}
+html, body { font-family: var(--font-ui); }
+
+/* Icônes SVG (taille relative au texte, couleur du clan) */
+.ico { width: 1.15em; height: 1.15em; vertical-align: -0.2em; flex-shrink: 0; }
+.f-ico .ico { width: 2.1rem; height: 2.1rem; }
+.sc-ico .ico { width: 1.35rem; height: 1.35rem; }
+.sc-bats .ico { width: 0.95rem; height: 0.95rem; margin-left: 1px; }
+.card-ico .ico { width: 1.9rem; height: 1.9rem; }
+.blvl-ico .ico { width: 1.15rem; height: 1.15rem; }
+.event-ico { line-height: 1; }
+
+/* Typographie : UI en Inter, titres en Cinzel */
+.event-text, .event-msg, .panel-section, .score-card .sc-pts, .btn-top, .btn-pass, .mode-tab,
+.f-status-btn, .faction-card .f-passif, .faction-card .f-bats, .hand-label { font-family: var(--font-ui); }
+.score-card .sc-name, .faction-card .f-name, .panel-title { font-family: var(--font-ui); font-weight: 600; letter-spacing: 0.04em; }
+.btn-start, .menu-title, .card-val { font-family: 'Cinzel', serif; }
+
+/* Menu */
+.menu-card { background: var(--glass); backdrop-filter: blur(14px); border: 1px solid var(--glass-line); border-radius: 20px; box-shadow: var(--shadow); }
+.mode-tab, .counter-btn, .f-status-btn { border-radius: 999px; font-weight: 600; letter-spacing: 0.02em; }
+.mode-tab.active { background: var(--accent); color: #1b130b; }
+.faction-card { border-radius: var(--r); padding: 1rem 0.9rem; transition: transform 0.18s, filter 0.18s, border-color 0.18s; }
+.faction-card[data-fid="0"] { background: linear-gradient(160deg, #3a2c14, #231a0d); }
+.faction-card[data-fid="1"] { background: linear-gradient(160deg, #3a1b21, #1f1013); }
+.faction-card[data-fid="2"] { background: linear-gradient(160deg, #182b3d, #0f1a26); }
+.faction-card[data-fid="3"] { background: linear-gradient(160deg, #3b2616, #22160c); }
+.faction-card .f-name { font-size: 0.92rem; margin-top: 0.15rem; }
+.btn-start { border-radius: 999px; background: linear-gradient(180deg, #e2b44c, #c28f22); color: #1b130b; box-shadow: 0 6px 18px rgba(209,162,58,0.28); }
+
+/* Barres */
+.topbar, .event-bar { backdrop-filter: blur(10px); }
+.topbar { background: var(--glass); border-bottom: 1px solid var(--glass-line); }
+.score-card { transition: background 0.25s; }
+.score-card .sc-pts { font-weight: 700; font-variant-numeric: tabular-nums; }
+.btn-top { border-radius: 999px; padding: 0.35rem 0.85rem; font-family: var(--font-ui); font-weight: 500; letter-spacing: 0; }
+.event-bar { background: rgba(45,32,21,0.85); }
+.event-text { font-weight: 500; }
+
+/* Panneau droit : cartes arrondies */
+.right-panel { background: #181109; }
+.panel-section { padding: 0.9rem; }
+.panel-title { font-size: 0.7rem; text-transform: uppercase; color: var(--dim); margin-bottom: 0.55rem; }
+
+/* Main : cartes modernes */
+.hand-area { background: linear-gradient(180deg, #1d150c, #150f08); }
+.hand-card { border-radius: 12px; border: 1px solid var(--glass-line); transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s; }
+.hand-card.normal { background: linear-gradient(165deg, #33261a, #1c140c); }
+.hand-card.bat-card { background: linear-gradient(165deg, #2c2540, #181226); }
+.hand-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.45); }
+.hand-card.selected { border-color: var(--accent) !important; box-shadow: 0 0 0 2px var(--accent), 0 12px 24px rgba(0,0,0,0.5); transform: translateY(-9px); }
+.card-val { font-size: 1.7rem; font-weight: 800; }
+.btn-pass { border-radius: 999px; font-family: var(--font-ui); font-weight: 600; letter-spacing: 0; }
+
+/* Contrôles de vue */
+#zoom-controls button { border-radius: 10px; background: var(--glass); backdrop-filter: blur(8px); }
+
+/* Tiroir mobile : même langage */
+@media (max-width: 580px) { .right-panel { background: #181109; border-radius: 20px 20px 0 0; } }
