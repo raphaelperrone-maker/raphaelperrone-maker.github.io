@@ -20,7 +20,7 @@
 <!-- ═══════════════════ MENU ═══════════════════ -->
 
 <!-- Badge version -->
-<div class="version-badge" onclick="openChangelog()" title="Voir l'historique des versions">v1.30</div>
+<div class="version-badge" onclick="openChangelog()" title="Voir l'historique des versions">v1.31</div>
 
 <!-- Overlay Changelog -->
 <div id="changelog-overlay">
@@ -31,8 +31,10 @@
     <!-- v1.18 — EN ÉVIDENCE -->
     <div class="cl-version cl-current">
       <div class="cl-ver-header">
-        <span class="cl-ver-tag latest">v1.30</span>
+        <span class="cl-ver-tag latest">v1.31</span>
         <div style="font-size:0.8rem;color:var(--dim);margin-bottom:0.4rem">Règles mises à jour, refonte graphique, mobile et navigation (+ v1.25 : 10 corrections gameplay)</div>
+        <div class="cl-item cl-highlight"><span class="cl-item-ico">💥</span><span><b>Règle 1/10 corrigée</b> — respecte Trêve sacrée, Citadelle, Barricade, restrictions d'événement et adjacence</span></div>
+        <div class="cl-item cl-highlight"><span class="cl-item-ico">🔄</span><span><b>Passer</b> — toute la main est remélangée et la main complète est reconstituée (Vignerons : 6 cartes)</span></div>
         <div class="cl-item cl-highlight"><span class="cl-item-ico">📖</span><span><b>Règles à jour</b> — pouvoirs, case Arsenal, durée des événements, composition des decks, village à 3 pts</span></div>
         <div class="cl-item cl-highlight"><span class="cl-item-ico">🎨</span><span><b>Nouveau design</b> — icônes vectorielles, plateau en relief, interface plus simple</span></div>
         <div class="cl-item cl-highlight"><span class="cl-item-ico">📱</span><span><b>Mobile</b> — tiroir d'infos, glisser/pincer pour naviguer, menus adaptés</span></div>
@@ -709,7 +711,7 @@
         <div class="rule-p">Chaque tour, vous pouvez faire <span class="rule-b">ces deux actions dans l'ordre que vous voulez</span> :</div>
         <div class="rule-li"><span class="rule-b">① Jouer 1 pouvoir</span> — gratuit, n'utilise pas votre action principale (1 max par tour)</div>
         <div class="rule-li"><span class="rule-b">② Poser 1 tuile numérique ou 1 bâtiment</span> — selon les règles de placement</div>
-        <div class="rule-p" style="margin-top:0.5rem">Ou alors : <span class="rule-b">Passer</span> — toute votre main retourne dans votre pioche, qui est mélangée, puis vous repiochez une main complète. Idéal si votre main est bloquée. Si vous n'avez aucun coup possible, cela se fait automatiquement.</div>
+        <div class="rule-p" style="margin-top:0.5rem">Ou alors : <span class="rule-b">Passer</span> — <b>toute votre main</b> (tuiles, bâtiments et pouvoirs) retourne dans votre pioche, qui est mélangée, puis vous repiochez une main complète. Idéal si votre main est bloquée. Si vous n'avez aucun coup possible, cela se fait automatiquement.</div>
       </div>
 
       <!-- ══════════ PLACEMENT ══════════ -->
@@ -726,7 +728,7 @@
 
         <div class="rule-h2">⚔️ Attaquer une case ennemie</div>
         <div class="rule-p">Posez sur une case ennemie si votre tuile a une <span class="rule-b">valeur strictement supérieure</span> à celle du sommet ennemi. La case passe sous votre contrôle — vos nouvelles tuiles s'empilent par-dessus.</div>
-        <div class="rule-callout">💥 <b>Règle du 1/10 :</b> jouer un <b>1</b> sur une pile dont le sommet ennemi est un <b>10</b> détruit <b>toute la pile</b> (le 10 ET toutes les tuiles en dessous) — la case devient entièrement vide !</div>
+        <div class="rule-callout">💥 <b>Règle du 1/10 :</b> jouer un <b>1</b> sur une pile dont le sommet ennemi est un <b>10</b> détruit <b>toute la pile</b> (le 10 ET toutes les tuiles en dessous) — la case devient entièrement vide ! Le 1 ne dispense que de la comparaison de valeurs : il reste soumis à l'adjacence, aux événements (Trêve sacrée, Éclipse, Marée montante…) et aux protections (Citadelle, Barricade de fromage). Il ne détruit pas la pile d'un allié en 2v2.</div>
 
         <div class="rule-h2">📦 Hauteur de pile</div>
         <div class="rule-p">Une case peut accumuler jusqu'à <b>4 tuiles</b> (empilées depuis le fond). Seule la tuile du sommet compte pour le contrôle et le combat. Vous ne pouvez pas vous empiler sur vos propres tuiles.</div>
