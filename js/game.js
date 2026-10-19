@@ -865,6 +865,7 @@ class Game {
     const f=this.cf(); if(ti>=f.hand.length) return false;
     const tile=f.hand[ti]; if(isPower(tile)) return false;
     if(!this.canPlace(row,col,ti)) return false;
+    this.lastMove={row,col,fid:f.id};
     const stack=this.board[row][col];
     if(stack.length){ const [ef,et]=stack[stack.length-1];
       if(ef!==f.id){ const enemy=this.ff(ef);
@@ -1795,6 +1796,15 @@ function drawBoard(){
     }
   } catch(hexErr){ ctx.globalAlpha=1; ctx.restore && ctx.restore(); }
   }
+  // Dernier coup joué : double anneau (blanc + couleur du clan) pour suivre le jeu de l'IA
+  const lm=G.lastMove;
+  if(lm&&G.board[lm.row][lm.col].length>0){
+    const [lx,ly]=hexCenter(lm.col,lm.row);
+    ctx.save();
+    drawHex(ctx,lx,ly,HEX_R-1,null,'rgba(255,255,255,0.9)',3);
+    drawHex(ctx,lx,ly,HEX_R-4,null,F_COLOR[lm.fid]||'#fff',2);
+    ctx.restore();
+  }
 }
 
 function drawHex(ctx,cx,cy,r,fill,stroke,lw){
@@ -2271,7 +2281,7 @@ function renderRightPanel(){
   // Current player
   document.getElementById('panel-cur-name').textContent=`${F_ICO[f.id]} ${f.name}${f.isAI?' 🤖':''}`;
   document.getElementById('panel-cur-name').style.color=F_COLOR[f.id];
-  document.getElementById('panel-cur-sub').textContent=`${f.tilesLeft()} cartes restantes · tour ${G._turnN||0}`;
+  document.getElementById('panel-cur-sub').textContent=`${f.tilesLeft()} cartes restantes · tour ${Math.floor((G.totalTurns||0)/G.np)+1}/${Math.round(G.turnLimit/G.np)}`;
 
   // Bat progression
   const bp=document.getElementById('bat-progress'); bp.innerHTML='';
@@ -3422,3 +3432,9 @@ fitCanvas();
 document.getElementById('changelog-overlay').addEventListener('click',function(e){
   if(e.target===this) closeChangelog();
 });
+
+// ── Tiroir d'infos (mobile) ──
+function togglePanel(open){
+  document.body.classList.toggle('panel-open', open===undefined ? !document.body.classList.contains('panel-open') : open);
+}
+window.addEventListener('keydown', e=>{ if(e.key==='Escape') togglePanel(false); });

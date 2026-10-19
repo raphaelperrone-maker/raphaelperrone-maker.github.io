@@ -444,6 +444,7 @@
     <div class="topbar-actions">
       <button class="btn-top" onclick="showMenu()">↩<span class="lbl"> Menu</span></button>
       <button class="btn-top" onclick="openRules('rules')" title="Consulter les règles" style="border-color:var(--brun-xcl)">📖<span class="lbl"> Règles</span></button>
+      <button class="btn-top mobile-only" id="btn-info" onclick="togglePanel()" aria-label="Infos de partie">ℹ️</button>
       <button class="btn-top" id="btn-feedback" onclick="openFeedback()" style="border-color:#52b788;color:#52b788">💬<span class="lbl"> Retour</span></button>
     </div>
   </div>
@@ -478,6 +479,7 @@
   </div>
 
   <!-- Main -->
+  <div class="sheet-backdrop" onclick="togglePanel(false)"></div>
   <div class="game-main">
     <div class="board-wrap" id="board-wrap">
       <canvas id="board-canvas"></canvas>
@@ -496,6 +498,9 @@
       </div>
     </div>
     <div class="right-panel" id="right-panel">
+      <div class="sheet-head"><span class="sh-title">INFOS DE PARTIE</span>
+        <button class="btn-top" onclick="openFeedback()" style="border-color:#52b788;color:#52b788">💬 Retour</button>
+        <button class="btn-top" onclick="togglePanel(false)" aria-label="Fermer">✕</button></div>
       <!-- Current player info -->
       <div class="panel-section" id="panel-player">
         <div class="panel-title">Tour actuel</div>
