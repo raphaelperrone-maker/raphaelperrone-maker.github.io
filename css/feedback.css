@@ -1,0 +1,20 @@
+.fb-star { color:var(--brun-xcl); transition:color 0.1s; user-select:none; }
+.fb-star.lit { color:var(--or); }
+.survey-q { margin-bottom:1.4rem; }
+.survey-q-label { font-size:1rem;color:var(--text);margin-bottom:0.6rem;line-height:1.4; }
+.survey-q-sub { font-size:0.8rem;color:var(--dim);margin-bottom:0.5rem; }
+.likert { display:flex;gap:6px;flex-wrap:wrap; }
+.likert-btn {
+  padding:0.35rem 0.7rem;border-radius:6px;border:1px solid var(--brun-xcl);
+  background:transparent;color:var(--dim);font-size:0.85rem;cursor:pointer;
+  font-family:'Crimson Pro',serif;transition:all 0.15s;
+}
+.likert-btn:hover { border-color:var(--or);color:var(--text); }
+.likert-btn.active { background:var(--or);color:var(--brun);border-color:var(--or);font-weight:700; }
+.likert-labels { display:flex;justify-content:space-between;font-size:0.72rem;color:var(--dim);margin-top:3px;padding:0 2px; }
+.survey-radio { display:flex;flex-direction:column;gap:6px; }
+.survey-radio label { display:flex;align-items:center;gap:8px;cursor:pointer;padding:5px 8px;border-radius:6px;border:1px solid transparent;transition:all 0.15s;font-size:0.92rem; }
+.survey-radio label:hover { border-color:var(--brun-xcl);background:rgba(200,150,12,0.06); }
+.survey-radio input[type=radio] { accent-color:var(--or);width:16px;height:16px; }
+.survey-textarea { width:100%;background:#0e0804;border:1px solid var(--brun-xcl);border-radius:6px;padding:0.6rem 0.8rem;color:var(--text);font-family:'Crimson Pro',serif;font-size:0.95rem;resize:vertical;min-height:80px; }
+.survey-section-title { font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:0.15em;color:var(--or);text-transform:uppercase;border-bottom:1px solid rgba(200,150,12,0.25);padding-bottom:0.4rem;margin-bottom:1rem; }
