@@ -922,3 +922,48 @@ button:focus-visible, .faction-card:focus-visible, .hand-card:focus-visible {
 }
 @media (max-width: 580px) { .score-card .sc-bats { display: none; } }
 @media (max-width: 380px) { .menu-title { font-size: 1.7rem; } }
+
+/* ══════════ v1.27 — Direction sobre : aplats, peu d'ombres, pas d'effets décoratifs ══════════ */
+:root {
+  --bg: #1b130b; --surface: #251a10; --surface2: #2d2015; --line: rgba(240,232,208,0.12);
+  --accent: #d1a23a; --text: #efe8d6; --dim: #a8997c;
+}
+body::before { display: none; }                         /* plus de grain */
+html, body { background: var(--bg); }
+.menu-title { animation: none; text-shadow: none; letter-spacing: 0.03em; color: var(--accent); }
+.menu-hex-icon { animation: none; color: var(--accent); }
+#screen-menu { background: radial-gradient(ellipse at 50% 0%, #2f2113 0%, var(--bg) 65%); }
+.menu-card { background: var(--surface); border: 1px solid var(--line); box-shadow: 0 6px 24px rgba(0,0,0,0.35); }
+.menu-section-title { color: var(--accent); letter-spacing: 0.1em; border-bottom-color: var(--line); }
+
+/* Cartes de clan : aplat sombre + liseré de la couleur du clan */
+.faction-card { box-shadow: none !important; border-width: 1px; }
+.faction-card[data-fid="0"] { background: #2e2413; border-color: #f5c87a88; }
+.faction-card[data-fid="1"] { background: #2a1519; border-color: #c0394a88; }
+.faction-card[data-fid="2"] { background: #14212e; border-color: #5c9bd688; }
+.faction-card[data-fid="3"] { background: #2d1d12; border-color: #e8823a88; color: #e8823a; }
+.faction-card.status-human { border-color: var(--green); }
+.faction-card.status-ai { border-color: #5c9bd6; }
+.faction-card:hover { transform: none; filter: brightness(1.12); }
+
+.btn-start { background: var(--accent); box-shadow: none; letter-spacing: 0.06em; }
+.btn-start:hover { transform: none; filter: brightness(1.1); box-shadow: none; }
+
+/* Partie : barres et panneaux plats */
+.topbar { background: var(--surface); border-bottom: 1px solid var(--line); }
+.topbar-title { letter-spacing: 0.06em; border-right-color: var(--line); }
+.score-card.active { background: rgba(209,162,58,0.14); box-shadow: inset 0 -2px 0 var(--accent); }
+.btn-top { border-color: var(--line); }
+.btn-top:hover { background: var(--surface2); color: var(--text); }
+.event-bar { background: var(--surface2); border-bottom: 1px solid var(--line); }
+.board-wrap { background: #1f160d; background-image: none; }
+.right-panel { background: var(--surface); border-left: 1px solid var(--line); }
+.panel-section { border-bottom-color: var(--line); }
+.panel-title { letter-spacing: 0.08em; color: var(--dim); }
+.hand-area { background: var(--surface); border-top: 1px solid var(--line); }
+.hand-card { box-shadow: none; }
+.hand-card.selected { box-shadow: 0 0 0 2px var(--accent); transform: translateY(-4px); }
+.btn-pass { background: var(--surface2); border: 1px solid var(--line); color: var(--text); }
+.btn-pass:hover { background: #3a2a1a; }
+#zoom-controls button { background: var(--surface); border-color: var(--line); color: var(--text); }
+.version-badge { background: var(--surface); border-color: var(--line); color: var(--dim); }

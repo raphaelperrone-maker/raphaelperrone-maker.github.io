@@ -1293,19 +1293,9 @@ function drawBoard(){
   if(!G) return;
   ctx.clearRect(0,0,BOARD_W,BOARD_H);
 
-  // Wood background
-  ctx.fillStyle='#2e1a0a';
+  // Fond uni, sobre
+  ctx.fillStyle='#1f160d';
   ctx.fillRect(0,0,BOARD_W,BOARD_H);
-  // Grain lines
-  ctx.save();
-  const rng=mulberry32(42);
-  for(let y=0;y<BOARD_H;y+=4){
-    const r=rng()%3; if(r!==0) continue;
-    ctx.strokeStyle=['#3a2210','#281405','#4a2e18','#221005'][rng()%4];
-    ctx.lineWidth=rng()%2===0?1:0.5; ctx.globalAlpha=0.7;
-    ctx.beginPath(); ctx.moveTo(rng()%80,y); ctx.lineTo(BOARD_W-rng()%80,y+(rng()%3)-1); ctx.stroke();
-  }
-  ctx.globalAlpha=1; ctx.restore();
 
   const f=G.cf(), sel=G.sel;
   const hasSel=sel!==null&&!G.over&&!f.isAI&&sel<f.hand.length&&!isPower(f.hand[sel]);
@@ -1332,25 +1322,25 @@ function drawBoard(){
     // Base color selon terrain
     let base,rim;
     if(bombed){ base='#180e04'; rim='#0e0702'; }
-    else if(terrain==='lake')   { base='#1a6a8a'; rim='#0e4a6a'; }
-    else if(terrain==='mount')  { base='#5a5070'; rim='#3a3050'; }
-    else if(terrain==='village'){ base='#4a6a20'; rim='#2a4a10'; }
-    else if(terrain==='sanctu') { base='#6a5008'; rim='#4a3800'; }
-    else if(terrain==='special') { base='#3a0820'; rim='#1a0410'; }
+    else if(terrain==='lake')   { base='#4f87a8'; rim='#3a6a88'; }
+    else if(terrain==='mount')  { base='#7d7889'; rim='#5c5868'; }
+    else if(terrain==='village'){ base='#6d9150'; rim='#4d6e36'; }
+    else if(terrain==='sanctu') { base='#8a6d2a'; rim='#5e4a18'; }
+    else if(terrain==='special') { base='#4b3a6b'; rim='#322748'; }
     else if(terrain==='start')  {
       const _sOwn=G.startOwnerOf?G.startOwnerOf(row,col):null;
-      base=(_sOwn!==null&&F_DARK[_sOwn])?F_DARK[_sOwn]:'#3a5020';
-      rim=(_sOwn!==null&&F_DARK[_sOwn])?F_DARK[_sOwn]:'#2a3818';
+      base=(_sOwn!==null&&F_DARK[_sOwn])?F_DARK[_sOwn]:'#56733f';
+      rim=(_sOwn!==null&&F_DARK[_sOwn])?F_DARK[_sOwn]:'#3d5530';
     }
     else if(stack.length){ const fi=stack[stack.length-1][0]; base=F_COLOR[fi]; rim=F_DARK[fi]; }
-    else if(isH&&(hasSel||pwrMode.active)){ base='#5a7830'; rim='#3a5818'; }
-    else if(isBonus){ base='#3a5a18'; rim='#2a4810'; }
-    else { base='#5a8030'; rim='#3a5818'; } // prairie verte
+    else if(isH&&(hasSel||pwrMode.active)){ base='#7aa05c'; rim='#4d6e36'; }
+    else if(isBonus){ base='#628548'; rim='#4d6e36'; }
+    else { base='#6a8f4e'; rim='#4d6e36'; } // prairie
 
     // Bordure permanente selon terrain (lisibilité)
     let bClr=rim, bW=1, glow=false;
-    if(terrain==='village')       { bClr='#e8c040'; bW=3.5; }  // or épais = village 3pts
-    else if(terrain==='special')  { bClr='#a060d8'; bW=3; }    // violet = temple B4
+    if(terrain==='village')       { bClr='#d9b44a'; bW=2.5; }  // or épais = village 3pts
+    else if(terrain==='special')  { bClr='#9a82c8'; bW=2.5; }    // violet = temple B4
     else if(terrain==='start')    {
       const _sOwnB=G.startOwnerOf?G.startOwnerOf(row,col):null;
       bClr=(_sOwnB!==null&&F_COLOR[_sOwnB])?F_COLOR[_sOwnB]:'#80c060'; bW=2.5;
@@ -1371,8 +1361,8 @@ function drawBoard(){
     }
 
     // Shadow
-    ctx.globalAlpha=0.45;
-    drawHex(ctx,cx,cy+3,HEX_R-1,'#0a0502',null,0);
+    ctx.globalAlpha=0.25;
+    drawHex(ctx,cx,cy+2,HEX_R-1,'#0a0502',null,0);
     ctx.globalAlpha=1;
 
     // Rim
@@ -1380,305 +1370,34 @@ function drawBoard(){
     // Body
     drawHex(ctx,cx,cy,HEX_R-3,base,bClr,bW);
 
-    // ── Rendu graphique vue du dessus style Carcassonne ──
+    // ── Rendu sobre : aplat + un seul symbole par type de case ──
     if(!stack.length&&!bombed){
-
-      if(terrain==='prairie'||terrain==='start'){
-        const pBase=terrain==='start'?'#4a8028':'#58aa30';
-        ctx.save(); ctx.globalAlpha=0.32; drawHex(ctx,cx,cy,HEX_R-3,pBase,null,0); ctx.restore();
-        const seed=row*137+col*71;
-        ctx.save(); ctx.globalAlpha=0.52;
-        for(let i=0;i<10;i++){
-          const a=(seed*41+i*97)%628/100, rad=3+(seed*13+i*37)%9;
-          const tx=cx+Math.cos(a)*rad, ty=cy+Math.sin(a)*rad;
-          ctx.fillStyle=(seed+i)%3===0?'#88dd44':(seed+i)%3===1?'#5ab828':'#70c838';
-          ctx.beginPath(); ctx.ellipse(tx,ty,2.2,1.4,a,0,Math.PI*2); ctx.fill();
-        }
-        ctx.restore();
-        // Arbre (vue semi-haut Carcassonne)
-        const treeCount=seed%5===0?2:seed%3===0?1:0;
-        if(treeCount>0){
-          const drawTree=(tx,ty,sz)=>{
-            ctx.fillStyle='#7a4020'; ctx.fillRect(tx-sz*0.4,ty,sz*0.8,sz*1.2);
-            ctx.fillStyle=seed%2===0?'#2a8830':'#388c1a';
-            ctx.beginPath(); ctx.arc(tx,ty-sz*0.4,sz*1.4,0,Math.PI*2); ctx.fill();
-            ctx.fillStyle=seed%2===0?'#38a840':'#48a828';
-            ctx.beginPath(); ctx.arc(tx-sz*0.5,ty-sz*0.8,sz*0.9,0,Math.PI*2); ctx.fill();
-            ctx.beginPath(); ctx.arc(tx+sz*0.5,ty-sz*0.8,sz*0.9,0,Math.PI*2); ctx.fill();
-          };
-          const t1x=cx+(seed%7)-3-(treeCount>1?3:0), t1y=cy-(seed%5)-4;
-          ctx.save(); ctx.globalAlpha=0.88; drawTree(t1x,t1y,2.5); ctx.restore();
-          if(treeCount>1){ ctx.save(); ctx.globalAlpha=0.82; drawTree(cx+(seed%4)+2,cy+(seed%3)+2,2); ctx.restore(); }
-        }
-        // Poule (1/6)
-        if(seed%6===0){
-          const hx=cx-(seed%8)+2, hy=cy+(seed%5)-1;
-          ctx.save(); ctx.globalAlpha=0.85;
-          ctx.fillStyle='#f8f0e0'; ctx.beginPath(); ctx.ellipse(hx,hy,4,3,0.3,0,Math.PI*2); ctx.fill();
-          ctx.beginPath(); ctx.arc(hx+4,hy-2,2.2,0,Math.PI*2); ctx.fill();
-          ctx.fillStyle='#e04020'; ctx.beginPath(); ctx.arc(hx+4.5,hy-4,1.2,0,Math.PI*2); ctx.fill();
-          ctx.fillStyle='#202020'; ctx.beginPath(); ctx.arc(hx+4.8,hy-2.5,0.5,0,Math.PI*2); ctx.fill();
-          ctx.restore();
-        }
-        // Fleur
-        ctx.save(); ctx.globalAlpha=0.65;
-        if(seed%4!==0){ const fleurClr=['#f8e040','#f880c0','#80d8f0','#f86040']; ctx.fillStyle=fleurClr[seed%4]; ctx.beginPath(); ctx.arc(cx+(seed%9)-4,cy+(seed%7)-3,1.5,0,Math.PI*2); ctx.fill(); }
-        ctx.restore();
-
-      } else if(terrain==='lake'){
-        // Lac — eau profonde avec texture vagues et nénuphar
-        const lgrad=ctx.createRadialGradient(cx-3,cy-3,1,cx,cy,HEX_R);
-        lgrad.addColorStop(0,'#38b8e8'); lgrad.addColorStop(1,'#0e5888');
-        ctx.save(); ctx.globalAlpha=0.80;
-        ctx.fillStyle=lgrad;
-        const lpts=hexPts(cx,cy,HEX_R-3);
-        ctx.beginPath(); ctx.moveTo(lpts[0][0],lpts[0][1]);
-        for(let i=1;i<6;i++) ctx.lineTo(lpts[i][0],lpts[i][1]);
-        ctx.closePath(); ctx.fill(); ctx.restore();
-        // Vagues sinueuses multiples
-        ctx.save(); ctx.globalAlpha=0.22; ctx.strokeStyle='#a8e8ff'; ctx.lineWidth=1.2;
-        for(let dy=-7;dy<=7;dy+=3.5){
+      ctx.save(); ctx.lineCap='round'; ctx.lineJoin='round'; ctx.textAlign='center'; ctx.textBaseline='middle';
+      if(terrain==='lake'){
+        ctx.globalAlpha=0.4; ctx.strokeStyle='#d6ecf7'; ctx.lineWidth=1.3;
+        for(const dy of [-6,0,6]){
           ctx.beginPath(); ctx.moveTo(cx-10,cy+dy);
-          ctx.bezierCurveTo(cx-5,cy+dy-2,cx+5,cy+dy+2,cx+10,cy+dy);
-          ctx.stroke();
+          ctx.quadraticCurveTo(cx-5,cy+dy-3,cx,cy+dy); ctx.quadraticCurveTo(cx+5,cy+dy+3,cx+10,cy+dy); ctx.stroke();
         }
-        ctx.restore();
-        // Reflet lumineux
-        ctx.save(); ctx.globalAlpha=0.35;
-        ctx.fillStyle='#d8f4ff';
-        ctx.beginPath(); ctx.ellipse(cx-4,cy-5,5,2,Math.PI/6,0,Math.PI*2); ctx.fill();
-        ctx.restore();
-        // Nénuphar + fleur
-        const seed2=row*100+col;
-        const nx=cx+(seed2%5)-2, ny=cy+(seed2%4)-1;
-        ctx.save(); ctx.globalAlpha=0.80;
-        ctx.fillStyle='#28a848'; ctx.strokeStyle='#186028'; ctx.lineWidth=0.7;
-        ctx.beginPath(); ctx.arc(nx,ny,3.8,0,Math.PI*2); ctx.fill(); ctx.stroke();
-        // Encoche du nénuphar
-        ctx.strokeStyle='#186028';
-        ctx.beginPath(); ctx.moveTo(nx,ny); ctx.lineTo(nx,ny-3.8); ctx.stroke();
-        ctx.fillStyle='#ff5888'; ctx.beginPath(); ctx.arc(nx,ny-1,1.5,0,Math.PI*2); ctx.fill();
-        ctx.restore();
-
       } else if(terrain==='mount'){
-        // Montagne — 3 styles : 0=neige, 1=forêt, 2=volcanique
-        const mseed=(row*17+col*31)%3;
-        const mPal=[
-          {b0:'#c0c8e8',b1:'#6878a8',r:'#d8e0f0',p:'#f8f8ff',ps:'#a0a8d0'},
-          {b0:'#708050',b1:'#304020',r:'#90a860',p:'#a8b870',ps:'#506030'},
-          {b0:'#a06040',b1:'#501808',r:'#d08060',p:'#e8c0a0',ps:'#904020'}
-        ][mseed];
-        const mGrd=ctx.createRadialGradient(cx-4,cy-4,1,cx,cy,HEX_R);
-        mGrd.addColorStop(0,mPal.b0); mGrd.addColorStop(1,mPal.b1);
-        ctx.save(); ctx.globalAlpha=0.78; ctx.fillStyle=mGrd;
-        const mhex=hexPts(cx,cy,HEX_R-3);
-        ctx.beginPath(); ctx.moveTo(mhex[0][0],mhex[0][1]);
-        for(let i=1;i<6;i++) ctx.lineTo(mhex[i][0],mhex[i][1]);
-        ctx.closePath(); ctx.fill(); ctx.restore();
-        ctx.save(); ctx.globalAlpha=0.28;
-        for(let ring=11;ring>=4;ring-=3.5){
-          ctx.strokeStyle=mPal.r; ctx.lineWidth=1.3; ctx.beginPath();
-          for(let ai=0;ai<=20;ai++){
-            const a=ai/20*Math.PI*2, jt=Math.sin(a*4.1+row*0.7)*2;
-            const rx=cx+Math.cos(a)*(ring+jt), ry=cy+Math.sin(a)*(ring+jt)*0.75;
-            ai===0?ctx.moveTo(rx,ry):ctx.lineTo(rx,ry);
-          }
-          ctx.closePath(); ctx.stroke();
-        }
-        ctx.restore();
-        ctx.save(); ctx.globalAlpha=0.92; ctx.fillStyle=mPal.p; ctx.strokeStyle=mPal.ps; ctx.lineWidth=1;
-        ctx.beginPath(); ctx.moveTo(cx,cy-10); ctx.lineTo(cx-7,cy+4); ctx.lineTo(cx+7,cy+4); ctx.closePath(); ctx.fill(); ctx.stroke();
-        if(mseed===0){ ctx.fillStyle='#fff'; ctx.globalAlpha=0.9; ctx.beginPath(); ctx.moveTo(cx,cy-10); ctx.lineTo(cx-3,cy-4); ctx.lineTo(cx+3,cy-4); ctx.closePath(); ctx.fill(); }
-        else if(mseed===2){ ctx.fillStyle='#ff4800'; ctx.globalAlpha=0.7; ctx.beginPath(); ctx.arc(cx,cy-6,2.5,0,Math.PI*2); ctx.fill(); ctx.strokeStyle='#c0a090'; ctx.lineWidth=1.5; ctx.globalAlpha=0.4; ctx.beginPath(); ctx.moveTo(cx,cy-8); ctx.bezierCurveTo(cx-3,cy-12,cx+2,cy-15,cx,cy-18); ctx.stroke(); }
-        ctx.restore();
+        ctx.fillStyle='#4a4558'; ctx.beginPath();
+        ctx.moveTo(cx-12,cy+9); ctx.lineTo(cx-3,cy-9); ctx.lineTo(cx+2,cy+1); ctx.lineTo(cx+6,cy-4); ctx.lineTo(cx+12,cy+9); ctx.closePath(); ctx.fill();
+        ctx.fillStyle='#eceaf3'; ctx.beginPath();
+        ctx.moveTo(cx-3,cy-9); ctx.lineTo(cx-7,cy-1); ctx.lineTo(cx-3,cy-3); ctx.lineTo(cx,cy-1); ctx.closePath(); ctx.fill();
       } else if(terrain==='village'){
-        // Village Carcassonne vue du dessus — style varié selon villageStyle
-        ctx.save(); ctx.globalAlpha=0.30;
-        drawHex(ctx,cx,cy,HEX_R-3,'#80cc40',null,0); ctx.restore();
-        const vStyle=G.villageStyles&&G.villageStyles.get(row+','+col)||'house';
-        ctx.save(); ctx.globalAlpha=0.92;
-
-        if(vStyle==='church'){
-          // Église + place + 2 maisons
-          // Fond sable place
-          ctx.fillStyle='#d8c880'; ctx.strokeStyle='#a09058'; ctx.lineWidth=0.5;
-          ctx.beginPath(); ctx.arc(cx,cy+2,5,0,Math.PI*2); ctx.fill(); ctx.stroke();
-          // Chemin en croix
-          ctx.strokeStyle='#c0a860'; ctx.lineWidth=1.5;
-          ctx.beginPath(); ctx.moveTo(cx-9,cy+2); ctx.lineTo(cx+9,cy+2); ctx.stroke();
-          ctx.beginPath(); ctx.moveTo(cx,cy-8); ctx.lineTo(cx,cy+10); ctx.stroke();
-          // Nef
-          ctx.fillStyle='#e8dcc8'; ctx.strokeStyle='#705828'; ctx.lineWidth=0.8;
-          ctx.fillRect(cx-2.5,cy-7,5,9); ctx.strokeRect(cx-2.5,cy-7,5,9);
-          // Transept
-          ctx.fillRect(cx-5,cy-2,10,3); ctx.strokeRect(cx-5,cy-2,10,3);
-          // Abside
-          ctx.beginPath(); ctx.arc(cx,cy+2,2.5,0,Math.PI*2); ctx.fill(); ctx.stroke();
-          // Clocher tour ronde
-          ctx.fillStyle='#988060';
-          ctx.beginPath(); ctx.arc(cx,cy-7,2.5,0,Math.PI*2); ctx.fill();
-          ctx.fillStyle='#c83818';
-          ctx.beginPath(); ctx.moveTo(cx-2.5,cy-7); ctx.lineTo(cx,cy-11); ctx.lineTo(cx+2.5,cy-7); ctx.closePath(); ctx.fill();
-          // 2 maisons flanquantes
-          [[cx-8,cy-4],[cx+4,cy-4]].forEach(([hx,hy],hi)=>{
-            const rc=['#d86840','#d89040'][hi];
-            ctx.fillStyle='#f0e0c0'; ctx.strokeStyle='#907050'; ctx.lineWidth=0.5;
-            ctx.fillRect(hx,hy,5,4); ctx.strokeRect(hx,hy,5,4);
-            ctx.fillStyle=rc; ctx.fillRect(hx,hy,5,1.8);
-          });
-
-        } else if(vStyle==='hamlet'){
-          // Hameau — 4-5 maisons groupées avec chemin de terre
-          // Chemin courbe
-          ctx.strokeStyle='#c8a858'; ctx.lineWidth=2;
-          ctx.beginPath(); ctx.moveTo(cx-10,cy+8); ctx.bezierCurveTo(cx-4,cy+4,cx+4,cy-2,cx+10,cy-6); ctx.stroke();
-          // 5 maisons de tailles variées
-          const hams=[
-            {x:cx-7,y:cy-6,w:5,h:4,r:'#c84030'},{x:cx+2,y:cy-7,w:4,h:4,r:'#c07040'},
-            {x:cx-8,y:cy+1,w:4,h:3,r:'#a04050'},{x:cx+5,y:cy+1,w:5,h:4,r:'#b06030'},
-            {x:cx-2,y:cy+3,w:4,h:3,r:'#c08040'}
-          ];
-          hams.forEach(h=>{
-            ctx.fillStyle='#f0e0c0'; ctx.strokeStyle='#806040'; ctx.lineWidth=0.5;
-            ctx.fillRect(h.x,h.y,h.w,h.h); ctx.strokeRect(h.x,h.y,h.w,h.h);
-            ctx.fillStyle=h.r; ctx.fillRect(h.x,h.y,h.w,h.h*0.45);
-          });
-          // Petite fontaine centrale
-          ctx.fillStyle='#60b8e0'; ctx.strokeStyle='#2080b0'; ctx.lineWidth=0.7;
-          ctx.beginPath(); ctx.arc(cx,cy-1,2,0,Math.PI*2); ctx.fill(); ctx.stroke();
-
-        } else {
-          // 'house' — 2-3 maisons isolées, espace ouvert, style Carcassonne simple
-          // Herbe légèrement différente
-          ctx.globalAlpha=0.2; drawHex(ctx,cx,cy,HEX_R-4,'#a0e050',null,0); ctx.globalAlpha=0.92;
-          // Chemin simple
-          ctx.strokeStyle='#c0a850'; ctx.lineWidth=1.5;
-          ctx.beginPath(); ctx.moveTo(cx-10,cy+5); ctx.lineTo(cx+10,cy-5); ctx.stroke();
-          // 2-3 maisons
-          const seed3=row*131+col*71;
-          const houses2=[[cx-6,cy-6],[cx+3,cy+1]];
-          if(seed3%3!==0) houses2.push([cx-3,cy+3]);
-          const roofClrs=['#c84028','#b87030','#a03850','#d07820'];
-          houses2.forEach(([hx,hy],hi)=>{
-            ctx.fillStyle='#eedad8'; ctx.strokeStyle='#907060'; ctx.lineWidth=0.6;
-            ctx.fillRect(hx,hy,6,5); ctx.strokeRect(hx,hy,6,5);
-            // Fenêtre
-            ctx.fillStyle='#a8d8f0'; ctx.fillRect(hx+2,hy+2,2,2);
-            // Toit (vue dessus = bande colorée en haut)
-            ctx.fillStyle=roofClrs[(seed3+hi)%4]; ctx.fillRect(hx,hy,6,2);
-          });
-        }
-        ctx.restore();
-        // Badge 2pts
-        ctx.save(); ctx.globalAlpha=0.85;
-        ctx.fillStyle='#C8960C'; ctx.font='bold 8px Cinzel,serif';
-        ctx.textAlign='center'; ctx.textBaseline='top';
-        ctx.fillText('2',cx,cy-HEX_R+9); ctx.restore();
-
+        ctx.fillStyle='#efe4c6'; ctx.fillRect(cx-6,cy-3,12,9);
+        ctx.fillStyle='#b5503a'; ctx.beginPath(); ctx.moveTo(cx-8,cy-3); ctx.lineTo(cx,cy-10); ctx.lineTo(cx+8,cy-3); ctx.closePath(); ctx.fill();
+        ctx.fillStyle='#f5e3a0'; ctx.font='bold 9px Cinzel,serif'; ctx.fillText('2',cx,cy+14);
       } else if(terrain==='special'){
-        // Temple B4 — fond violet profond rayonnant
-        const spGrd=ctx.createRadialGradient(cx,cy,2,cx,cy,HEX_R-3);
-        spGrd.addColorStop(0,'#3a2880'); spGrd.addColorStop(1,'#0e0c28');
-        ctx.save(); ctx.globalAlpha=0.88; ctx.fillStyle=spGrd;
-        const spPts=hexPts(cx,cy,HEX_R-3);
-        ctx.beginPath(); ctx.moveTo(spPts[0][0],spPts[0][1]);
-        for(let i=1;i<6;i++) ctx.lineTo(spPts[i][0],spPts[i][1]); ctx.closePath(); ctx.fill(); ctx.restore();
-        // Anneau or hexagonal
-        ctx.save(); ctx.globalAlpha=0.82; ctx.strokeStyle='#ffd700'; ctx.lineWidth=2.2;
-        const srPts2=hexPts(cx,cy,HEX_R-6);
-        ctx.beginPath(); ctx.moveTo(srPts2[0][0],srPts2[0][1]);
-        for(let i=1;i<6;i++) ctx.lineTo(srPts2[i][0],srPts2[i][1]); ctx.closePath(); ctx.stroke(); ctx.restore();
-        // Rayons lumineux
-        ctx.save(); ctx.globalAlpha=0.22; ctx.strokeStyle='#ffd700'; ctx.lineWidth=1;
-        for(let i=0;i<6;i++){
-          const a=i/6*Math.PI*2;
-          ctx.beginPath(); ctx.moveTo(cx+Math.cos(a)*5,cy+Math.sin(a)*5);
-          ctx.lineTo(cx+Math.cos(a)*(HEX_R-8),cy+Math.sin(a)*(HEX_R-8)); ctx.stroke();
-        }
-        ctx.restore();
-        // Étoile 8 branches or
-        ctx.save(); ctx.globalAlpha=0.88;
-        for(let i=0;i<8;i++){
-          const a=i/8*Math.PI*2, a2=(i+0.5)/8*Math.PI*2;
-          ctx.fillStyle=i%2===0?'#ffd700':'#c0a000';
-          ctx.beginPath(); ctx.moveTo(cx,cy);
-          ctx.lineTo(cx+Math.cos(a)*12,cy+Math.sin(a)*12);
-          ctx.lineTo(cx+Math.cos(a2)*5,cy+Math.sin(a2)*5);
-          ctx.closePath(); ctx.fill();
-        }
-        ctx.restore();
-        // Badge B4
-        ctx.save(); ctx.globalAlpha=0.92; ctx.fillStyle='#ffffff'; ctx.font='bold 7px sans-serif';
-        ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('B4',cx,cy+1); ctx.restore();
+        ctx.fillStyle='#e6dcf5'; ctx.font='bold 11px Cinzel,serif'; ctx.fillText('B4',cx,cy+1);
       } else if(terrain==='start'){
-        // Case de départ — croix de chevalier + étoile, fond herbe spécial
-        ctx.save(); ctx.globalAlpha=0.35;
-        drawHex(ctx,cx,cy,HEX_R-3,'#58aa28',null,0); ctx.restore();
-        // Herbe dense comme prairie
-        ctx.save(); ctx.globalAlpha=0.45;
-        const sseeds=[[cx-4,cy-5],[cx+5,cy-3],[cx-6,cy+2],[cx+3,cy+5],[cx,cy-7]];
-        for(const [tx,ty] of sseeds){
-          ctx.fillStyle='#68cc38'; ctx.beginPath();
-          ctx.ellipse(tx,ty,2.5,1.5,0,0,Math.PI*2); ctx.fill();
-        }
-        ctx.restore();
-        // Anneau distinctif or
-        ctx.save(); ctx.globalAlpha=0.70;
-        drawHex(ctx,cx,cy,HEX_R-4,null,'#ffd700',2); ctx.restore();
-        // Étoile 4 branches (repère de départ)
-        ctx.save(); ctx.globalAlpha=0.85;
-        ctx.fillStyle='#ffd700'; ctx.strokeStyle='#b08800'; ctx.lineWidth=0.8;
-        ctx.beginPath();
-        for(let pt=0;pt<8;pt++){
-          const a=pt*Math.PI/4-Math.PI/8;
-          const r2=pt%2===0?6:3;
-          const xp=cx+Math.cos(a)*r2, yp=cy+Math.sin(a)*r2;
-          pt===0?ctx.moveTo(xp,yp):ctx.lineTo(xp,yp);
-        }
-        ctx.closePath(); ctx.fill(); ctx.stroke();
-        ctx.restore();
-        // Lettre "S" si assigné à un clan
-        if(G.startAssigned){
-          for(const [fid,sp] of Object.entries(G.startAssigned)){
-            if(sp[0]===row&&sp[1]===col){
-              ctx.save(); ctx.globalAlpha=0.9;
-              ctx.fillStyle=F_COLOR[+fid]; ctx.font='bold 10px Cinzel,serif';
-              ctx.textAlign='center'; ctx.textBaseline='middle';
-              ctx.fillText(F_ICO[+fid],cx,cy); ctx.restore();
-            }
-          }
-        }
+        const so=G.startOwnerOf?G.startOwnerOf(row,col):null;
+        ctx.fillStyle=(so!==null&&F_COLOR[so])?F_COLOR[so]:'#cfe6b8'; ctx.font='16px serif'; ctx.fillText('★',cx,cy+1);
       } else if(terrain==='sanctu'){
-        // Sanctuaire — parchemin/forteresse vue du dessus, teinte or
-        ctx.save(); ctx.globalAlpha=0.30;
-        drawHex(ctx,cx,cy,HEX_R-3,'#d0a020',null,0); ctx.restore();
-
-        ctx.save(); ctx.globalAlpha=0.85;
-        // Mur d'enceinte (cercle crénelé)
-        ctx.strokeStyle='#806010'; ctx.lineWidth=2;
-        ctx.beginPath(); ctx.arc(cx,cy,8,0,Math.PI*2); ctx.stroke();
-        // Créneaux (petits carrés sur le cercle)
-        ctx.fillStyle='#9a7818';
-        for(let a=0;a<Math.PI*2;a+=Math.PI/4){
-          const mx=cx+Math.cos(a)*8, my=cy+Math.sin(a)*8;
-          ctx.fillRect(mx-1.5,my-1.5,3,3);
-        }
-        // Donjon central
-        ctx.fillStyle='#c09020'; ctx.strokeStyle='#806010'; ctx.lineWidth=1;
-        ctx.fillRect(cx-4,cy-4,8,8); ctx.strokeRect(cx-4,cy-4,8,8);
-        // Tour centrale
-        ctx.fillStyle='#d0a830';
-        ctx.beginPath(); ctx.arc(cx,cy,3,0,Math.PI*2); ctx.fill();
-        ctx.restore();
-
-        // Anneau pulsé or + icône ⚡
-        ctx.save(); ctx.globalAlpha=0.60;
-        drawHex(ctx,cx,cy,HEX_R-3,null,'#ffd700',2); ctx.restore();
-        ctx.save(); ctx.globalAlpha=0.80;
-        ctx.fillStyle='#ffd700'; ctx.font='bold 8px Cinzel,serif';
-        ctx.textAlign='center'; ctx.textBaseline='top';
-        ctx.fillText('⚡',cx,cy-HEX_R+9); ctx.restore();
+        ctx.fillStyle='#f3d98a'; ctx.beginPath();
+        ctx.moveTo(cx,cy-9); ctx.lineTo(cx+7,cy); ctx.lineTo(cx,cy+9); ctx.lineTo(cx-7,cy); ctx.closePath(); ctx.fill();
       }
+      ctx.restore();
     }
     // Zone départ : rendu intégré dans terrain==='start' ci-dessus
     // Contour léger sur cases vides (hors bloquées)
@@ -1748,21 +1467,15 @@ function drawBoard(){
         ctx.fillStyle='rgba(255,255,255,0.7)'; ctx.font=`7px serif`; ctx.textAlign='center'; ctx.textBaseline='top';
         const lbl=BAT_LABEL[tfi][tt]; ctx.fillText(lbl.length>8?lbl.slice(0,7)+'…':lbl,cx,cy+20);
       } else {
-        // Numeric tile — large faction icon
+        // Tuile numérique : aplat couleur de clan, valeur en grand, petite icône
         drawHex(ctx,cx,cy,HEX_R-4,F_DARK[tfi],null,0);
-        ctx.save(); ctx.globalAlpha=0.25;
+        ctx.save(); ctx.globalAlpha=0.35;
         drawHex(ctx,cx,cy,HEX_R-4,F_COLOR[tfi],null,0); ctx.restore();
         drawHex(ctx,cx,cy,HEX_R-4,null,F_COLOR[tfi],2);
-        // Shine
-        ctx.save(); ctx.globalAlpha=0.08;
-        const spts=hexPts(cx,cy,HEX_R-4);
-        ctx.beginPath(); ctx.moveTo(spts[4][0],spts[4][1]); ctx.lineTo(spts[5][0],spts[5][1]);
-        ctx.lineTo(spts[0][0],spts[0][1]); ctx.lineTo(cx,cy-4); ctx.closePath();
-        ctx.fillStyle='#fff'; ctx.fill(); ctx.restore();
-        ctx.font=`${HEX_R-2}px serif`; ctx.textAlign='center'; ctx.textBaseline='middle';
-        ctx.fillText(F_ICO[tfi],cx,cy-5);
-        ctx.fillStyle='#f0e8d0'; ctx.font=`bold 11px Cinzel,serif`; ctx.textAlign='center'; ctx.textBaseline='top';
-        ctx.fillText(tt,cx,cy+9);
+        ctx.font=`11px serif`; ctx.textAlign='center'; ctx.textBaseline='middle';
+        ctx.fillText(F_ICO[tfi],cx,cy-12);
+        ctx.fillStyle='#fff8e6'; ctx.font=`bold 18px Cinzel,serif`; ctx.textAlign='center'; ctx.textBaseline='middle';
+        ctx.fillText(tt,cx,cy+5);
       }
 
       // Pile badge — profondeur + bonus pts
