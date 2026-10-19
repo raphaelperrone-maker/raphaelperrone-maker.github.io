@@ -840,6 +840,59 @@ body::before {
 }
 .level-desc b { color:var(--or-cl); }
 
+
+/* ══════════ v1.26 — Polish design & ergonomie ══════════ */
+/* Le badge de version ne doit pas recouvrir la barre du haut en partie */
+body:has(#screen-game.active) .version-badge { display: none; }
+
+/* Focus clavier visible, cohérent avec la charte */
+button:focus-visible, .faction-card:focus-visible, .hand-card:focus-visible {
+  outline: 2px solid var(--or); outline-offset: 2px;
+}
+
+/* Contrôles de vue : discrets au repos, nets au survol */
+#zoom-controls { opacity: 0.55; transition: opacity 0.2s; }
+#zoom-controls:hover, #zoom-controls:focus-within { opacity: 1; }
+#zoom-controls button { transition: background 0.15s, transform 0.1s; touch-action: manipulation; }
+#zoom-controls button:active { transform: scale(0.92); }
+#zoom-hint {
+  position: absolute; left: 10px; bottom: 10px; z-index: 10; pointer-events: none;
+  font-family: 'Cinzel', serif; font-size: 0.62rem; letter-spacing: 0.06em; color: var(--dim);
+  background: rgba(26,16,8,0.8); border: 1px solid rgba(200,150,12,0.25); border-radius: 6px;
+  padding: 3px 8px; opacity: 0.8; transition: opacity 0.6s;
+}
+#zoom-hint.gone { opacity: 0; }
+
+/* Cartes en main : défilement fluide */
+.hand-cards { scroll-snap-type: x proximity; scrollbar-width: thin; scrollbar-color: var(--brun-cl) transparent; }
+.hand-card { scroll-snap-align: start; touch-action: manipulation; }
+
+/* Tactile : pas de flèches (le glissé les remplace), contrôles plus gros */
+@media (pointer: coarse), (max-width: 600px) {
+  #zoom-hint { display: none; }
+  #zoom-controls { grid-template-columns: repeat(3, 40px); grid-template-rows: 40px; opacity: 0.8; bottom: 8px; right: 8px; }
+  #zoom-controls button { width: 40px; height: 40px; }
+  #zoom-controls .zc-arrow { display: none; }
+  #zoom-controls button[onclick="zoomIn()"]    { grid-column: 1 !important; grid-row: 1 !important; }
+  #zoom-controls button[onclick="zoomOut()"]   { grid-column: 2 !important; grid-row: 1 !important; }
+  #zoom-controls button[onclick="zoomReset()"] { grid-column: 3 !important; grid-row: 1 !important; }
+}
+/* Petit écran : barre du haut compacte */
+@media (max-width: 600px) {
+  .topbar { height: 46px; }
+  .score-card { padding: 0.2rem 0.5rem; gap: 0.3rem; flex-shrink: 0; }
+  .score-card .sc-name { display: none; }
+  .topbar-actions { gap: 0.3rem; padding: 0 0.4rem; }
+  .btn-top { padding: 0.3rem 0.5rem; }
+  .btn-top .lbl { display: none; }
+  .event-bar { padding: 0.25rem 0.6rem; min-height: 32px; gap: 0.5rem; }
+  .event-ico { font-size: 1.1rem; }
+  .event-text { font-size: 0.78rem; line-height: 1.25; }
+  .event-msg { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
 </style>
 </head>
 <body>
@@ -1269,9 +1322,9 @@ body::before {
     <div class="topbar-title">⬡ La Guerre de la Baguette <span id="topbar-level" style="font-size:.7rem;opacity:.7;margin-left:.4rem"></span></div>
     <div class="score-cards" id="score-cards"></div>
     <div class="topbar-actions">
-      <button class="btn-top" onclick="showMenu()">↩ Menu</button>
-      <button class="btn-top" onclick="openRules('rules')" title="Consulter les règles" style="border-color:var(--brun-xcl)">📖 Règles</button>
-      <button class="btn-top" id="btn-feedback" onclick="openFeedback()" style="border-color:#52b788;color:#52b788">💬 Retour</button>
+      <button class="btn-top" onclick="showMenu()">↩<span class="lbl"> Menu</span></button>
+      <button class="btn-top" onclick="openRules('rules')" title="Consulter les règles" style="border-color:var(--brun-xcl)">📖<span class="lbl"> Règles</span></button>
+      <button class="btn-top" id="btn-feedback" onclick="openFeedback()" style="border-color:#52b788;color:#52b788">💬<span class="lbl"> Retour</span></button>
     </div>
   </div>
 
@@ -1309,16 +1362,17 @@ body::before {
     <div class="board-wrap" id="board-wrap">
       <canvas id="board-canvas"></canvas>
       <div id="ctx-hint"><span class="ctx-ico"></span><span class="ctx-msg"></span></div>
+      <div id="zoom-hint">Glisser = déplacer · Molette = zoom · Échap = annuler</div>
       <div id="zoom-controls">
         <button onclick="zoomIn()" title="Zoom avant (+)" style="grid-column:1;grid-row:1">+</button>
-        <button onclick="panBy(0,-40)" title="Haut (↑)" style="grid-column:2;grid-row:1">↑</button>
-        <button onclick="zoomReset()" title="Réinitialiser" style="grid-column:3;grid-row:1;font-size:0.75rem">⌂</button>
-        <button onclick="panBy(-40,0)" title="Gauche (←)" style="grid-column:1;grid-row:2">←</button>
-        <button style="grid-column:2;grid-row:2;opacity:0.2;cursor:default" disabled>·</button>
-        <button onclick="panBy(40,0)" title="Droite (→)" style="grid-column:3;grid-row:2">→</button>
+        <button class="zc-arrow" onclick="panBy(0,-40)" title="Haut (↑)" style="grid-column:2;grid-row:1">↑</button>
+        <button onclick="zoomReset()" title="Recentrer (0)" style="grid-column:3;grid-row:1;font-size:0.75rem">⌂</button>
+        <button class="zc-arrow" onclick="panBy(-40,0)" title="Gauche (←)" style="grid-column:1;grid-row:2">←</button>
+        <button class="zc-arrow" style="grid-column:2;grid-row:2;opacity:0.2;cursor:default" disabled>·</button>
+        <button class="zc-arrow" onclick="panBy(40,0)" title="Droite (→)" style="grid-column:3;grid-row:2">→</button>
         <button onclick="zoomOut()" title="Zoom arrière (-)" style="grid-column:1;grid-row:3">−</button>
-        <button onclick="panBy(0,40)" title="Bas (↓)" style="grid-column:2;grid-row:3">↓</button>
-        <button style="grid-column:3;grid-row:3;opacity:0.2;cursor:default" disabled>·</button>
+        <button class="zc-arrow" onclick="panBy(0,40)" title="Bas (↓)" style="grid-column:2;grid-row:3">↓</button>
+        <button class="zc-arrow" style="grid-column:3;grid-row:3;opacity:0.2;cursor:default" disabled>·</button>
       </div>
     </div>
     <div class="right-panel" id="right-panel">
@@ -3764,7 +3818,7 @@ function passTurn(){
 
 canvas.addEventListener('click', e=>{
   if(!G||G.over||G.cf().isAI) return;
-  if(_isPanning) return; // pas de clic pendant le pan
+  if(_isPanning||_justDragged) return; // pas de clic pendant/juste après un glissé
   const [px,py]=canvasEventCoords(e);
   const cell=pixelToHex(px,py); if(!cell) return;
   const [row,col]=cell;
@@ -4092,90 +4146,136 @@ function showVictory(){
 //  CANVAS RESIZE
 // ═══════════════════════════════════════════════════════════════════
 // ── Système de zoom ──
-let _zoom=1, _panX=0, _panY=0, _isPanning=false, _lastPan={x:0,y:0};
-const ZOOM_MIN=0.4, ZOOM_MAX=3.0, ZOOM_STEP=0.25;
+let _zoom=1, _panX=0, _panY=0, _isPanning=false, _justDragged=false;
+const ZOOM_MIN=0.4, ZOOM_MAX=3.0, ZOOM_STEP=0.25, DRAG_THRESHOLD=6;
 
+// Échelle de base : le plateau tient entièrement dans la zone visible
+function _baseScale(wrap){
+  return Math.min(wrap.clientWidth/BOARD_W, wrap.clientHeight/BOARD_H, 1);
+}
+// Empêche de perdre le plateau hors de l'écran
+function _clampPan(wrap, cw, ch){
+  const mx=Math.abs(cw-wrap.clientWidth)/2+60, my=Math.abs(ch-wrap.clientHeight)/2+60;
+  _panX=Math.max(-mx,Math.min(mx,_panX));
+  _panY=Math.max(-my,Math.min(my,_panY));
+}
 function applyZoom(){
-  const wrap=document.getElementById('board-wrap'); if(!wrap) return;
-  const ww=wrap.clientWidth, wh=wrap.clientHeight;
-  // Échelle de base pour tenir dans le wrap
-  const baseScale=Math.min(ww/BOARD_W, wh/BOARD_H, 1);
-  const totalScale=baseScale*_zoom;
-  canvas.style.width=(BOARD_W*totalScale)+'px';
-  canvas.style.height=(BOARD_H*totalScale)+'px';
+  const _h=document.getElementById('zoom-hint'); if(_h&&(_zoom!==1||_panX||_panY)) _h.classList.add('gone');
+  const wrap=document.getElementById('board-wrap');
+  if(!wrap||!wrap.clientWidth||!wrap.clientHeight) return; // écran caché : on réessaiera au ResizeObserver
+  const s=_baseScale(wrap)*_zoom;
+  const cw=BOARD_W*s, ch=BOARD_H*s;
+  _clampPan(wrap,cw,ch);
+  canvas.style.width=cw+'px';
+  canvas.style.height=ch+'px';
   canvas.style.position='relative';
   canvas.style.left=_panX+'px';
   canvas.style.top=_panY+'px';
   canvas.style.transition='none';
 }
+// Zoom autour d'un point (coordonnées écran) : le point sous le curseur/les doigts reste fixe
+function zoomAt(newZoom, clientX, clientY){
+  const wrap=document.getElementById('board-wrap'); if(!wrap) return;
+  newZoom=Math.max(ZOOM_MIN,Math.min(ZOOM_MAX,newZoom));
+  if(newZoom===_zoom) return;
+  const r=wrap.getBoundingClientRect();
+  const px=(clientX===undefined?r.left+r.width/2:clientX)-(r.left+r.width/2);
+  const py=(clientY===undefined?r.top+r.height/2:clientY)-(r.top+r.height/2);
+  const k=newZoom/_zoom;
+  _panX=px-(px-_panX)*k; _panY=py-(py-_panY)*k;
+  _zoom=newZoom; applyZoom();
+}
 function fitCanvas(){ _zoom=1; _panX=0; _panY=0; applyZoom(); }
-function zoomIn(){ _zoom=Math.min(_zoom+ZOOM_STEP,ZOOM_MAX); applyZoom(); }
-function zoomOut(){ _zoom=Math.max(_zoom-ZOOM_STEP,ZOOM_MIN); applyZoom(); }
-function zoomReset(){ _zoom=1; _panX=0; _panY=0; applyZoom(); }
+function zoomIn(){ zoomAt(_zoom+ZOOM_STEP); }
+function zoomOut(){ zoomAt(_zoom-ZOOM_STEP); }
+function zoomReset(){ fitCanvas(); }
 function panBy(dx,dy){ _panX+=dx; _panY+=dy; applyZoom(); }
 
-// Flèches clavier pour naviguer
-document.addEventListener('keydown', e=>{
-  const tag=document.activeElement.tagName;
-  if(tag==='INPUT'||tag==='TEXTAREA') return;
-  if(e.key==='ArrowLeft')  { _panX+=40; applyZoom(); e.preventDefault(); }
-  if(e.key==='ArrowRight') { _panX-=40; applyZoom(); e.preventDefault(); }
-  if(e.key==='ArrowUp')    { _panY+=40; applyZoom(); e.preventDefault(); }
-  if(e.key==='ArrowDown')  { _panY-=40; applyZoom(); e.preventDefault(); }
-  if(e.key==='+'||e.key==='=') { zoomIn(); e.preventDefault(); }
-  if(e.key==='-') { zoomOut(); e.preventDefault(); }
-  if(e.key==='0') { zoomReset(); e.preventDefault(); }
+// Clavier : actif uniquement pendant la partie, sans overlay ouvert
+function _gameKeysActive(){
+  if(!document.getElementById('screen-game').classList.contains('active')) return false;
+  const tag=document.activeElement&&document.activeElement.tagName;
+  if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT') return false;
+  return !document.querySelector('.rules-overlay.active, #victory-overlay.active, #changelog-overlay.active');
+}
+window.addEventListener('keydown', e=>{
+  if(!_gameKeysActive()||e.ctrlKey||e.metaKey||e.altKey) return;
+  const S=e.shiftKey?120:40;
+  switch(e.key){
+    case 'ArrowLeft':  panBy(S,0); break;
+    case 'ArrowRight': panBy(-S,0); break;
+    case 'ArrowUp':    panBy(0,S); break;
+    case 'ArrowDown':  panBy(0,-S); break;
+    case '+': case '=': zoomIn(); break;
+    case '-': case '_': zoomOut(); break;
+    case '0': zoomReset(); break;
+    case 'Escape': if(pwrMode.active) cancelPower(); else if(G&&G.sel!==null){ G.sel=null; renderAll(); } return;
+    default: return;
+  }
+  e.preventDefault();
 });
 
-// Zoom molette
+// Zoom molette (centré sur le curseur)
 const boardWrap=document.getElementById('board-wrap');
 boardWrap.addEventListener('wheel', e=>{
   e.preventDefault();
-  const delta=e.deltaY<0?ZOOM_STEP:-ZOOM_STEP;
-  _zoom=Math.max(ZOOM_MIN,Math.min(ZOOM_MAX,_zoom+delta));
-  applyZoom();
+  zoomAt(_zoom*(e.deltaY<0?1.15:1/1.15), e.clientX, e.clientY);
 },{passive:false});
 
-// Pan souris
+// Pan souris : glisser avec le clic gauche (au-delà de 6 px) ; clic milieu/droit/Alt = pan immédiat
+let _mDown=null;
 canvas.addEventListener('mousedown', e=>{
-  if(e.button===1||e.button===2||(e.button===0&&e.altKey)){
-    _isPanning=true; _lastPan={x:e.clientX,y:e.clientY};
-    canvas.classList.add('panning'); e.preventDefault();
-  }
+  const instant=e.button===1||e.button===2||(e.button===0&&e.altKey);
+  if(e.button!==0&&!instant) return;
+  _mDown={x:e.clientX,y:e.clientY,instant};
+  if(instant){ _isPanning=true; canvas.classList.add('panning'); e.preventDefault(); }
 });
 window.addEventListener('mousemove', e=>{
-  if(!_isPanning) return;
-  _panX+=e.clientX-_lastPan.x; _panY+=e.clientY-_lastPan.y;
-  _lastPan={x:e.clientX,y:e.clientY}; applyZoom();
+  if(!_mDown) return;
+  if(!_isPanning){
+    if(Math.hypot(e.clientX-_mDown.x,e.clientY-_mDown.y)<DRAG_THRESHOLD) return;
+    _isPanning=true; canvas.classList.add('panning');
+  }
+  _panX+=e.clientX-_mDown.x; _panY+=e.clientY-_mDown.y;
+  _mDown.x=e.clientX; _mDown.y=e.clientY; applyZoom();
 });
-window.addEventListener('mouseup', ()=>{ _isPanning=false; canvas.classList.remove('panning'); });
+window.addEventListener('mouseup', ()=>{
+  if(_isPanning){ _justDragged=true; setTimeout(()=>{_justDragged=false;},0); } // évite le clic fantôme après un glissé
+  _isPanning=false; _mDown=null; canvas.classList.remove('panning');
+});
+canvas.addEventListener('contextmenu', e=>e.preventDefault());
 
-// Touch pinch-to-zoom + pan
-let _touches={}, _lastPinchDist=null;
+// Tactile : 1 doigt = pan (après seuil, sinon c'est un tap), 2 doigts = pinch centré sur les doigts
+let _tPrev=null, _tMoved=false, _pinch=null;
 canvas.addEventListener('touchstart', e=>{
-  [...e.changedTouches].forEach(t=>_touches[t.identifier]={x:t.clientX,y:t.clientY});
-  if(Object.keys(_touches).length===2) _lastPinchDist=null;
+  _tMoved=false;
+  if(e.touches.length===1){ _tPrev={x:e.touches[0].clientX,y:e.touches[0].clientY,sx:e.touches[0].clientX,sy:e.touches[0].clientY}; _pinch=null; }
+  else if(e.touches.length===2){ _tMoved=true; _tPrev=null; _pinch=_pinchInfo(e.touches); }
 },{passive:true});
+function _pinchInfo(ts){
+  return {d:Math.hypot(ts[0].clientX-ts[1].clientX,ts[0].clientY-ts[1].clientY),
+          x:(ts[0].clientX+ts[1].clientX)/2, y:(ts[0].clientY+ts[1].clientY)/2};
+}
 canvas.addEventListener('touchmove', e=>{
   e.preventDefault();
-  const ts=[...e.touches];
-  if(ts.length===2){
-    // Pinch zoom
-    const d=Math.hypot(ts[0].clientX-ts[1].clientX,ts[0].clientY-ts[1].clientY);
-    if(_lastPinchDist){ const ratio=d/_lastPinchDist; _zoom=Math.max(ZOOM_MIN,Math.min(ZOOM_MAX,_zoom*ratio)); applyZoom(); }
-    _lastPinchDist=d;
-  } else if(ts.length===1){
-    // Pan 1 doigt
-    const t=ts[0];
-    if(_touches[t.identifier]){
-      _panX+=t.clientX-_touches[t.identifier].x; _panY+=t.clientY-_touches[t.identifier].y; applyZoom();
-    }
-    _touches[t.identifier]={x:t.clientX,y:t.clientY};
+  if(e.touches.length===2&&_pinch){
+    const cur=_pinchInfo(e.touches);
+    _panX+=cur.x-_pinch.x; _panY+=cur.y-_pinch.y; // le centre des doigts entraîne aussi le plateau
+    zoomAt(_zoom*cur.d/_pinch.d, cur.x, cur.y);
+    applyZoom();
+    _pinch=cur;
+  } else if(e.touches.length===1&&_tPrev){
+    const t=e.touches[0];
+    if(!_tMoved&&Math.hypot(t.clientX-_tPrev.sx,t.clientY-_tPrev.sy)<DRAG_THRESHOLD) return;
+    _tMoved=true;
+    _panX+=t.clientX-_tPrev.x; _panY+=t.clientY-_tPrev.y; applyZoom();
+    _tPrev.x=t.clientX; _tPrev.y=t.clientY;
   }
 },{passive:false});
 canvas.addEventListener('touchend', e=>{
-  [...e.changedTouches].forEach(t=>delete _touches[t.identifier]);
-  if(Object.keys(_touches).length<2) _lastPinchDist=null;
+  if(_tMoved){ _justDragged=true; setTimeout(()=>{_justDragged=false;},350); } // bloque le clic synthétisé
+  if(e.touches.length===1){ _tPrev={x:e.touches[0].clientX,y:e.touches[0].clientY,sx:e.touches[0].clientX,sy:e.touches[0].clientY}; _pinch=null; }
+  else if(e.touches.length===0){ _tPrev=null; _pinch=null; }
 },{passive:true});
 
 // pixelToHex tient compte du zoom et du pan
@@ -4186,17 +4286,8 @@ function canvasEventCoords(e){
 }
 
 window.addEventListener('resize',()=>{ fitCanvas(); drawBoard(); });
-window.addEventListener('keydown', e=>{
-  if(!document.getElementById('screen-game').classList.contains('active')) return;
-  const S=40;
-  if(e.key==='ArrowLeft'){ _panX+=S; applyZoom(); e.preventDefault(); }
-  else if(e.key==='ArrowRight'){ _panX-=S; applyZoom(); e.preventDefault(); }
-  else if(e.key==='ArrowUp'){ _panY+=S; applyZoom(); e.preventDefault(); }
-  else if(e.key==='ArrowDown'){ _panY-=S; applyZoom(); e.preventDefault(); }
-  else if(e.key==='+'||e.key==='='){ zoomIn(); }
-  else if(e.key==='-'){ zoomOut(); }
-  else if(e.key==='0'){ zoomReset(); }
-});
+// L'écran de jeu est caché au chargement (taille 0) : on recadre dès que la zone devient visible ou change de taille
+if(window.ResizeObserver) new ResizeObserver(()=>{ applyZoom(); }).observe(boardWrap);
 
 
 // ══════════════════════════════════════════════════════════════════════
