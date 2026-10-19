@@ -1378,7 +1378,7 @@ function drawBoard(){
       } else if(terrain==='village'){
         ctx.fillStyle='#efe4c6'; ctx.fillRect(cx-6,cy-3,12,9);
         ctx.fillStyle='#b5503a'; ctx.beginPath(); ctx.moveTo(cx-8,cy-3); ctx.lineTo(cx,cy-10); ctx.lineTo(cx+8,cy-3); ctx.closePath(); ctx.fill();
-        ctx.fillStyle='#f5e3a0'; ctx.font='bold 9px Inter,sans-serif'; ctx.fillText('2',cx,cy+14);
+        ctx.fillStyle='#f5e3a0'; ctx.font='bold 9px Inter,sans-serif'; ctx.fillText('3',cx,cy+14);
       } else if(terrain==='special'){
         ctx.fillStyle='#e6dcf5'; ctx.font='bold 11px Inter,sans-serif'; ctx.fillText('B4',cx,cy+1);
       } else if(terrain==='start'){
@@ -1461,23 +1461,13 @@ function drawBoard(){
         ctx.fillText(tt,cx,cy+5); ctx.restore();
       }
 
-      // Pile badge — profondeur + bonus pts
+      // Pile badge — hauteur de la pile
       if(n>1){
-        const PILE_PTS=[0,0,1,2,3];
-        const pBonus=PILE_PTS[Math.min(n,4)]||0;
         const bx=cx+HEX_R-12, by=cy-HEX_R+12;
         ctx.beginPath(); ctx.arc(bx,by,9,0,Math.PI*2);
         ctx.fillStyle='#1a0a02'; ctx.fill(); ctx.strokeStyle='#C8960C'; ctx.lineWidth=2; ctx.stroke();
         ctx.fillStyle='#C8960C'; ctx.font='bold 8px Inter,sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
         ctx.fillText(n,bx,by+1);
-        // Badge bonus pts pile (+1/+2/+3)
-        if(pBonus>0){
-          ctx.save(); ctx.globalAlpha=0.9;
-          ctx.fillStyle='#60a5fa'; ctx.font='bold 7px sans-serif';
-          ctx.textAlign='center'; ctx.textBaseline='middle';
-          ctx.fillText('+'+pBonus, bx, by+11);
-          ctx.restore();
-        }
       }
     }
 

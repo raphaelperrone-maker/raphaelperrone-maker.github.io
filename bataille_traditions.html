@@ -20,7 +20,7 @@
 <!-- ═══════════════════ MENU ═══════════════════ -->
 
 <!-- Badge version -->
-<div class="version-badge" onclick="openChangelog()" title="Voir l'historique des versions">v1.29</div>
+<div class="version-badge" onclick="openChangelog()" title="Voir l'historique des versions">v1.30</div>
 
 <!-- Overlay Changelog -->
 <div id="changelog-overlay">
@@ -31,8 +31,9 @@
     <!-- v1.18 — EN ÉVIDENCE -->
     <div class="cl-version cl-current">
       <div class="cl-ver-header">
-        <span class="cl-ver-tag latest">v1.29</span>
-        <div style="font-size:0.8rem;color:var(--dim);margin-bottom:0.4rem">Refonte graphique, mobile et navigation (+ v1.25 : 10 corrections gameplay)</div>
+        <span class="cl-ver-tag latest">v1.30</span>
+        <div style="font-size:0.8rem;color:var(--dim);margin-bottom:0.4rem">Règles mises à jour, refonte graphique, mobile et navigation (+ v1.25 : 10 corrections gameplay)</div>
+        <div class="cl-item cl-highlight"><span class="cl-item-ico">📖</span><span><b>Règles à jour</b> — pouvoirs, case Arsenal, durée des événements, composition des decks, village à 3 pts</span></div>
         <div class="cl-item cl-highlight"><span class="cl-item-ico">🎨</span><span><b>Nouveau design</b> — icônes vectorielles, plateau en relief, interface plus simple</span></div>
         <div class="cl-item cl-highlight"><span class="cl-item-ico">📱</span><span><b>Mobile</b> — tiroir d'infos, glisser/pincer pour naviguer, menus adaptés</span></div>
         <div class="cl-item cl-highlight"><span class="cl-item-ico">🧭</span><span><b>Navigation</b> — zoom sur le curseur, plateau visible dès le lancement, dernier coup mis en évidence</span></div>
@@ -676,11 +677,11 @@
         <div class="rule-p">4 grandes traditions culinaires françaises s'affrontent sur un plateau de <b>100 cases hexagonales</b>. Vous posez des tuiles, construisez vos bâtiments et utilisez vos pouvoirs pour contrôler le territoire et l'emporter au score.</div>
 
         <div class="rule-callout">
-          <span class="rule-b">👑 Condition de victoire principale :</span> posez votre Bâtiment Niveau 4 sur l'un des 4 temples violets centraux pour déclencher le Dernier Tour. Chaque adversaire joue encore une fois, puis victoire au joueur avec le plus de points.<br>
-          <span class="rule-b">⌛ Fin automatique :</span> si le timer expire (28 événements × nb joueurs tours — ex : 112 tours à 4j), la partie s'arrête et on compte les points.
+          <span class="rule-b">👑 Condition de victoire principale :</span> posez votre Bâtiment Niveau 4 sur l'un des temples violets (2 à 4 selon la carte) pour déclencher le Dernier Tour. Chaque adversaire joue encore une fois, puis victoire au joueur avec le plus de points.<br>
+          <span class="rule-b">⌛ Fin automatique :</span> si le timer expire (28 événements × nb joueurs tours — ex : 112 tours à 4j), la partie s'arrête et on compte les points. Elle s'arrête aussi si plus aucun joueur n'a de cartes.
         </div>
 
-        <div class="rule-h2">📦 Votre deck (42 cartes)</div>
+        <div class="rule-h2">📦 Votre deck (40 cartes, +2 pouvoirs aux niveaux 2 et 3)</div>
         <div class="rule-grid">
           <div class="rule-card">
             <div style="font-size:1.4rem;margin-bottom:4px">🔢</div>
@@ -695,12 +696,12 @@
           <div class="rule-card">
             <div style="font-size:1.4rem;margin-bottom:4px">✦</div>
             <div style="font-family:var(--font-ui);font-size:0.8rem;color:var(--or)">2 cartes pouvoir</div>
-            <div class="rule-p" style="margin-top:4px">Tirées au hasard dans un pool de 10. Combinaison unique à chaque partie. <b>Jouer un pouvoir est gratuit</b> — vous pouvez aussi poser une tuile dans le même tour.</div>
+            <div class="rule-p" style="margin-top:4px">Tirées au hasard dans un pool de 12 cartes (9 pouvoirs différents). Niveaux 2 et 3 uniquement. <b>Jouer un pouvoir est gratuit</b> — vous pouvez aussi poser une tuile dans le même tour.</div>
           </div>
           <div class="rule-card">
             <div style="font-size:1.4rem;margin-bottom:4px">🖐</div>
             <div style="font-family:var(--font-ui);font-size:0.8rem;color:var(--or)">Main de 5 cartes</div>
-            <div class="rule-p" style="margin-top:4px">Vous maintenez toujours 5 cartes (6 pour les Vignerons, ou +1 avec la Bibliothèque). Mélange libre de types.</div>
+            <div class="rule-p" style="margin-top:4px">Vous gardez 5 cartes en main : dès que vous posez, vous repiochez. Les Vignerons en ont 6 au niveau 3, et la case Bibliothèque ajoute +1. Mélange libre de types.</div>
           </div>
         </div>
 
@@ -708,7 +709,7 @@
         <div class="rule-p">Chaque tour, vous pouvez faire <span class="rule-b">ces deux actions dans l'ordre que vous voulez</span> :</div>
         <div class="rule-li"><span class="rule-b">① Jouer 1 pouvoir</span> — gratuit, n'utilise pas votre action principale (1 max par tour)</div>
         <div class="rule-li"><span class="rule-b">② Poser 1 tuile numérique ou 1 bâtiment</span> — selon les règles de placement</div>
-        <div class="rule-p" style="margin-top:0.5rem">Ou alors : <span class="rule-b">Passer</span> — défausse toutes vos cartes, repioche immédiatement 5 cartes. Idéal si votre main est bloquée.</div>
+        <div class="rule-p" style="margin-top:0.5rem">Ou alors : <span class="rule-b">Passer</span> — toute votre main retourne dans votre pioche, qui est mélangée, puis vous repiochez une main complète. Idéal si votre main est bloquée. Si vous n'avez aucun coup possible, cela se fait automatiquement.</div>
       </div>
 
       <!-- ══════════ PLACEMENT ══════════ -->
@@ -748,8 +749,8 @@
         <div class="rule-h2">🗺️ Terrain</div>
         <table class="rule-table">
           <tr><th>Icône</th><th>Type</th><th>Effet</th></tr>
-          <tr><td>🏡</td><td><b>Village</b></td><td>Case normale · bord doré épais visible sur le plateau</td></tr>
-          <tr><td>⬡</td><td><b>Temple violet</b></td><td><b>Réservé exclusivement au B4</b> · aucune autre tuile ne peut y être posée · sans contrainte d'adjacence</td></tr>
+          <tr><td>🏡</td><td><b>Village</b></td><td><b>3 pts</b> au lieu de 1 · bord doré et maison sur le plateau</td></tr>
+          <tr><td>⬡</td><td><b>Temple violet</b></td><td><b>Réservé exclusivement au B4</b> · aucune autre tuile ne peut y être posée · sans contrainte d'adjacence · 1 pt · 2 à 4 temples selon la carte</td></tr>
           <tr><td>⭐</td><td><b>Case de départ</b></td><td>Premier placement obligatoire ici</td></tr>
           <tr><td>🌊</td><td><b>Lac</b></td><td>Inaccessible</td></tr>
           <tr><td>⛰️</td><td><b>Montagne</b></td><td>Inaccessible</td></tr>
@@ -813,10 +814,11 @@
           <tr><td><b>B4 ★</b></td><td><b>+4 pts</b></td><td>Temple (1) + B4 = <b>5 pts</b></td></tr>
         </table>
 
-        <div class="rule-h2">🎁 Cases bonus (4 par partie)</div>
+        <div class="rule-h2">🎁 Cases bonus (4 par partie, 6 types possibles)</div>
         <div class="rule-p">En <b>Niveaux 2 et 3 uniquement</b>, <span class="rule-b">4 cases bonus</span> sont placées sur le plateau au début — une par quadrant, à des positions fixes selon la carte choisie (équité garantie). Elles accordent un avantage <b>tant que vous en contrôlez le sommet</b>. Si un ennemi vous la reprend, vous perdez l'effet.</div>
         <table class="rule-table">
           <tr><th>Icône</th><th>Nom</th><th>Effet (actif si vous contrôlez)</th></tr>
+          <tr><td>⚔️</td><td><b>Arsenal</b></td><td>Toutes vos <b>tuiles numériques</b> attaquent avec <b>+1</b> en valeur (pas les bâtiments).</td></tr>
           <tr><td>🏰</td><td><b>Citadelle</b></td><td>Votre tuile sur cette case est <b>inattaquable</b>.</td></tr>
           <tr><td>🗺️</td><td><b>Carrefour</b></td><td>Cette case vaut <b>3 pts</b> au lieu de 1.</td></tr>
           <tr><td>📖</td><td><b>Bibliothèque</b></td><td>Votre main maximale augmente de <b>+1</b> (Vignerons : 7 cartes, autres : 6).</td></tr>
@@ -829,28 +831,26 @@
       <!-- ══════════ POUVOIRS ══════════ -->
       <div id="rules-pouvoirs" class="rules-section">
         <div class="rule-h1">✦ Pouvoirs</div>
-        <div class="rule-lead">10 pouvoirs communs · actifs en Niveaux 2 et 3 · chaque joueur tire 2 au hasard · toujours gratuits</div>
+        <div class="rule-lead">12 cartes (9 pouvoirs) · actifs en Niveaux 2 et 3 · chaque joueur en reçoit 2 au hasard · toujours gratuits</div>
         <div class="rule-callout" style="border-color:#c084fc55;background:rgba(192,132,252,0.06)">⚡ <b>Gratuit :</b> jouer un pouvoir ne remplace pas votre action principale. Vous pouvez jouer 1 pouvoir <em>et</em> poser 1 tuile dans le même tour. Maximum 1 pouvoir par tour.</div>
 
         <div class="rule-h2">⚡ Pouvoirs instantanés (effet immédiat, aucune cible)</div>
         <table class="rule-table">
           <tr><th>Icône</th><th>Nom</th><th>Exemplaires</th><th>Effet</th></tr>
           <tr><td>🥐</td><td><b>Tous pour le croissant</b></td><td>×1</td><td>Piochez immédiatement 3 cartes supplémentaires.</td></tr>
-          <tr><td>🗑️</td><td><b>Jeter sa main</b></td><td>×1</td><td>Défaussez toute votre main et repiochez autant. Rejouez immédiatement. <b>1×/partie.</b></td></tr>
+          <tr><td>🗑️</td><td><b>Jeter sa main</b></td><td>×1</td><td>Remettez vos tuiles dans la pioche, mélangez et repiochez autant. Vos autres pouvoirs restent en main. Rejouez immédiatement. <b>1×/partie.</b></td></tr>
           <tr><td>🖼️</td><td><b>Toile renforcée</b></td><td>×1</td><td>Vos bâtiments sont inattaquables jusqu'à votre prochain tour.</td></tr>
-          <tr><td>🫕</td><td><b>Double meule</b></td><td>×1</td><td>Posez 2 tuiles numériques ce tour au lieu d'une seule.</td></tr>
-          <tr><td>⭐</td><td><b>Inspiration</b></td><td>×1</td><td>Vos bâtiments gagnent +2 en valeur d'attaque ce tour.</td></tr>
+          <tr><td>⚙️</td><td><b>Double meule</b></td><td>×1</td><td>Posez 2 tuiles numériques ce tour au lieu d'une seule.</td></tr>
+          <tr><td>⭐</td><td><b>Inspiration</b></td><td>×1</td><td>Vos <b>bâtiments</b> gagnent +2 en valeur d'attaque ce tour.</td></tr>
         </table>
 
         <div class="rule-h2">🎯 Pouvoirs avec cible (cliquez sur le plateau après activation)</div>
         <table class="rule-table">
           <tr><th>Icône</th><th>Nom</th><th>Exemplaires</th><th>Effet</th><th>Cible</th></tr>
-          <tr><td>🥖</td><td><b>Bombardement de baguette</b></td><td>×2</td><td>Détruit toute la pile — case inutilisable définitivement.</td><td>Case ennemie</td></tr>
-          <tr><td>🧀</td><td><b>Barricade de fromage</b></td><td>×2</td><td>Bloque une case vide — personne ne peut plus y jouer.</td><td>Case vide</td></tr>
-          <tr><td>🖌️</td><td><b>Pluie de pinceaux</b></td><td>×2</td><td>Retire la tuile du dessus d'une pile ennemie.</td><td>Case ennemie</td></tr>
+          <tr><td>🥖</td><td><b>Bombardement de baguette</b></td><td>×2</td><td>Retire le <b>bâtiment</b> ennemi visible (sauf B4). La pile en dessous reste en place.</td><td>Bâtiment ennemi</td></tr>
+          <tr><td>🧀</td><td><b>Barricade de fromage</b></td><td>×2</td><td>Une de vos cases devient <b>inattaquable</b> jusqu'à votre prochain tour.</td><td>Votre case</td></tr>
+          <tr><td>🖌️</td><td><b>Pluie de pinceaux</b></td><td>×2</td><td>Retire la tuile du dessus d'une pile ennemie (sauf B4).</td><td>Case ennemie</td></tr>
           <tr><td>🍷</td><td><b>Rivière de vin</b></td><td>×1</td><td>Déplace l'une de vos tuiles (non-bâtiment) vers une case adjacente vide.</td><td>Votre tuile</td></tr>
-          <tr><td>🔨</td><td><b>Destruction</b></td><td>×1</td><td>Retire uniquement le bâtiment ennemi visible — la pile reste.</td><td>Bâtiment ennemi</td></tr>
-          <tr><td>🪨</td><td><b>Fortification</b></td><td>×1</td><td>Une de vos cases devient inattaquable jusqu'à votre prochain tour.</td><td>Votre case</td></tr>
         </table>
       </div>
 
@@ -881,7 +881,7 @@
           <tr><td>🛡️</td><td><b>Trêve sacrée</b></td><td>Aucune attaque ni recouvrement ennemi possible.</td></tr>
           <tr><td>🏚️</td><td><b>Gel des chantiers</b></td><td>Aucun bâtiment ne peut être posé.</td></tr>
           <tr><td>⚔️</td><td><b>Frénésie guerrière</b></td><td>Chaque joueur DOIT attaquer, ou passer. <b>Ignorée si aucun ne peut attaquer.</b></td></tr>
-          <tr><td>🕳️</td><td><b>Fosses forcées</b></td><td>Chaque joueur perd sa plus petite tuile (<b>1 seule fois</b> à l'activation).</td></tr>
+          <tr><td>🗑️</td><td><b>Défausse forcée</b></td><td>Chaque joueur perd sa plus petite tuile (<b>1 seule fois</b> à l'activation).</td></tr>
           <tr><td>🕳️</td><td><b>Gouffre</b></td><td>Pile maximale réduite à 3 ce tour.</td></tr>
           <tr><td>🌊</td><td><b>Marée montante</b></td><td>Les tuiles de valeur 1 ne peuvent pas être posées ce tour.</td></tr>
           <tr><td>🌪️</td><td><b>Tempête</b></td><td>Les tuiles de valeur 10 ne peuvent pas être posées ce tour.</td></tr>
@@ -914,7 +914,7 @@
             </div>
           </div>
           <div class="rule-p" style="font-size:0.82rem">Leurs tuiles <b>6 à 10</b> défendent avec +1. Une tuile 7 Boulanger exige un 9 pour être capturée. Les tuiles 1-5 se défendent normalement — ce qui les rend compatibles avec l'avantage des Artistes.</div>
-          <div style="margin-top:0.4rem;font-size:0.78rem;color:var(--dim)"><b style="color:#f5c87a">Distribution :</b> parfaitement régulière (3 × chaque valeur 1–10) · jamais à court, solide sur toute la gamme.</div>
+          <div style="margin-top:0.4rem;font-size:0.78rem;color:var(--dim)"><b style="color:#f5c87a">Distribution :</b> solide en début (1-2 : 4 ex.) et en fin de partie (7-10 : 3 ex.), plus légère au milieu (5-6 : 2 ex.).</div>
           <div style="font-size:0.75rem;color:var(--dim);margin-top:0.3rem">🫓 Fournil → 🥐 Pâtisserie → 🥖 Maison du Pain → 🏪 Boulangerie</div>
         </div>
 
@@ -968,9 +968,19 @@
             </div>
           </div>
           <div class="rule-p" style="font-size:0.82rem">Leurs bâtiments attaquent avec <b>+1 en force</b> : B1=5, B2=7, B3=9, B4=11. Permet de capturer des positions ennemies que les autres ne pourraient pas. La progression bâtiment est leur arme principale.</div>
-          <div style="margin-top:0.4rem;font-size:0.78rem;color:var(--dim)"><b style="color:#d4c870">Distribution :</b> fort en petites valeurs (1-2 : 5+4 ex.) pour s'installer tôt · peu de hautes valeurs.</div>
+          <div style="margin-top:0.4rem;font-size:0.78rem;color:var(--dim)"><b style="color:#d4c870">Distribution :</b> fort en petites valeurs (1 à 4 : 4 ex. chacune) pour s'installer tôt · peu de hautes valeurs (7 à 10 : 2 ex.).</div>
           <div style="font-size:0.75rem;color:var(--dim);margin-top:0.3rem">🐄 Fruitière → 🧀 Affinoir → 🫙 Cave à Fromage → 🏠 Fromagerie</div>
         </div>
+
+        <div class="rule-h2">🃏 Composition des decks (40 cartes par clan)</div>
+        <div class="rule-p">Nombre d'exemplaires de chaque tuile numérique, auquel s'ajoutent les 10 bâtiments (B1, B2, B3 ×3 chacun, B4 ×1).</div>
+        <table class="rule-table">
+          <tr><th>Clan</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>Total</th></tr>
+          <tr><td><b>🥐 Boulangers</b></td><td>4</td><td>4</td><td>3</td><td>3</td><td>2</td><td>2</td><td>3</td><td>3</td><td>3</td><td>3</td><td><b>30</b></td></tr>
+          <tr><td><b>🍷 Vignerons</b></td><td>2</td><td>2</td><td>3</td><td>3</td><td>4</td><td>4</td><td>4</td><td>4</td><td>2</td><td>2</td><td><b>30</b></td></tr>
+          <tr><td><b>🎨 Artistes</b></td><td>1</td><td>2</td><td>3</td><td>3</td><td>3</td><td>3</td><td>4</td><td>4</td><td>4</td><td>3</td><td><b>30</b></td></tr>
+          <tr><td><b>🧀 Fromagers</b></td><td>4</td><td>4</td><td>4</td><td>4</td><td>3</td><td>3</td><td>2</td><td>2</td><td>2</td><td>2</td><td><b>30</b></td></tr>
+        </table>
 
         <div class="rule-h2">⚖️ Équilibre des forces</div>
         <table class="rule-table">
