@@ -7,7 +7,7 @@ const BONUS_CELL_TYPES = [
   {id:'citadelle', ico:'🏰',name:'Citadelle',         color:'#8060c0',desc:"Vos tuiles sur cette case sont inattaquables.",effect:'shield'},
   {id:'carrefour', ico:'🗺️',name:'Carrefour',         color:'#40a0c0',desc:"Cette case vaut 3 pts au lieu de 1.",         effect:'triple_pts'},
   {id:'biblio',    ico:'📖',name:'Bibliothèque',      color:'#6080c0',desc:"Main maximale +1 tant que vous la contrôlez (Vignerons : 7 cartes, autres : 6).",effect:'hand_max'},
-  {id:'entrepot',  ico:'📦',name:'Entrepôt',          color:'#a06020',desc:"Votre pile max passe à 5 partout.",           effect:'stack_bonus'},
+  {id:'entrepot',  ico:'📦',name:'Entrepôt',          color:'#535c6d',desc:"Votre pile max passe à 5 partout.",           effect:'stack_bonus'},
   {id:'monument',  ico:'⭐',name:'Monument',          color:'#c0a000',desc:"+3 pts bonus à la fin de partie.",            effect:'end_bonus'},
 ];
 
@@ -1316,7 +1316,7 @@ function drawBoard(){
 
     // Base color selon terrain
     let base,rim;
-    if(bombed){ base='#180e04'; rim='#0e0702'; }
+    if(bombed){ base='#0b0d11'; rim='#0e0702'; }
     else if(terrain==='lake')   { base='#4f87a8'; rim='#3a6a88'; }
     else if(terrain==='mount')  { base='#7d7889'; rim='#5c5868'; }
     else if(terrain==='village'){ base='#6d9150'; rim='#4d6e36'; }
@@ -1975,11 +1975,11 @@ function renderHand(){
       const numOk=!((evk==='only_even'&&tile%2!==0)||(evk==='only_odd'&&tile%2===0));
       if(!numOk) card.classList.add('disabled');
       if(isSel) card.classList.add('selected');
-      card.style.background=isSel?`linear-gradient(160deg,${f.color},${f.dark})`:'linear-gradient(160deg,#2a1808,#1a0e04)';
+      card.style.background=isSel?`linear-gradient(160deg,${f.color},${f.dark})`:'linear-gradient(160deg,#14181e,#0c0e12)';
       card.style.borderColor=isSel?'#C8960C':f.color;
       card.innerHTML=`
         <div class="card-ico" style="margin-top:4px;font-size:1.2rem">${F_ICO[f.id]}</div>
-        <div class="card-val" style="color:${isSel?'#1a0e04':f.color}">${tile}</div>`;
+        <div class="card-val" style="color:${isSel?'#0c0e12':f.color}">${tile}</div>`;
       if(numOk) card.addEventListener('click',()=>selectTile(i));
     }
     container.appendChild(card);
@@ -2683,10 +2683,10 @@ function _mRenderTerrain(ctx,cx,cy,R,terrain,row,col){
 function renderMapCanvas(ctx, terrain, W, H, hoverKey=null){
   ctx.clearRect(0,0,W,H);
   // fond bois
-  ctx.fillStyle='#2e1a0a';ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='#161b22';ctx.fillRect(0,0,W,H);
   const rng2=_mRng(42);
   for(let y=0;y<H;y+=4){if(rng2()%1>.7)continue;
-    ctx.strokeStyle=['#3a2210','#281405','#4a2e18','#221005'][Math.floor(rng2()*4)];
+    ctx.strokeStyle=['#1e232c','#281405','#272e3b','#101217'][Math.floor(rng2()*4)];
     ctx.lineWidth=.7;ctx.globalAlpha=.6;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
   ctx.globalAlpha=1;
   const lay=_mLayout(W,H);
@@ -2696,7 +2696,7 @@ function renderMapCanvas(ctx, terrain, W, H, hoverKey=null){
     const [cx,cy]=_mCenter(row,col,lay);
     const mc=MAP_COLORS[ter]||MAP_COLORS.prairie;
     // Ombre
-    ctx.save();ctx.globalAlpha=.42;_mHex(ctx,cx,cy+3,lay.R-1,'#0a0502');ctx.restore();
+    ctx.save();ctx.globalAlpha=.42;_mHex(ctx,cx,cy+3,lay.R-1,'#050607');ctx.restore();
     // Fond
     _mHex(ctx,cx,cy,lay.R-1,mc.r);
     _mHex(ctx,cx,cy,lay.R-3,mc.b);

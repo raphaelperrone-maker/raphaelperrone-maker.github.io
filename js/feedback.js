@@ -258,7 +258,7 @@ const DEMOS = {
   intro: () => `
     <div style="display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap;justify-content:center;padding:0.5rem 0">
       ${['🥐 Boulangers','🍷 Vignerons','🎨 Artistes','🧀 Fromagers'].map((f,i)=>`
-        <div style="text-align:center;padding:0.6rem 1rem;border-radius:8px;border:2px solid ${['#f5c87a','#c0394a','#5c9bd6','#d4c870'][i]};background:${['#5a3d0a','#3a0a10','#0e2a45','#3a3010'][i]}22">
+        <div style="text-align:center;padding:0.6rem 1rem;border-radius:8px;border:2px solid ${['#f5c87a','#c0394a','#5c9bd6','#d4c870'][i]};background:${['#5a3d0a','#3a0a10','#0e2a45','#1e232c'][i]}22">
           <div style="font-size:1.6rem">${f.split(' ')[0]}</div>
           <div style="font-family:var(--font-ui);font-size:0.7rem;color:${['#f5c87a','#c0394a','#5c9bd6','#d4c870'][i]};margin-top:3px">${f.split(' ')[1]}</div>
         </div>`).join('')}
@@ -268,7 +268,7 @@ const DEMOS = {
     <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;padding:0.3rem 0">
       ${[['7','num'],['🌿','bat'],['3','num'],['✦P3','pow'],['10','num']].map(([v,t])=>`
         <div style="width:54px;height:72px;border-radius:7px;border:2px solid ${t==='pow'?'#c084fc':t==='bat'?'#5a8a5a':'#f5c87a'};
-          background:${t==='pow'?'linear-gradient(160deg,#4a2080,#1a0830)':t==='bat'?'linear-gradient(160deg,#2a2040,#1a1028)':'linear-gradient(160deg,#2a1808,#1a0e04)'};
+          background:${t==='pow'?'linear-gradient(160deg,#4a2080,#1a0830)':t==='bat'?'linear-gradient(160deg,#2a2040,#1a1028)':'linear-gradient(160deg,#14181e,#0c0e12)'};
           display:flex;align-items:center;justify-content:center;flex-direction:column;gap:2px">
           ${t==='pow'?`<div style="font-size:0.55rem;color:#c084fc;font-family:var(--font-ui)">POUVOIR</div><div style="font-size:1rem">✦</div>`:`<div style="font-size:0.85rem">🥐</div><div style="font-family:var(--font-ui);font-weight:900;font-size:${t==='bat'?'0.7':'1.1'}rem;color:${t==='bat'?'#5a8a5a':'#f5c87a'}">${v}</div>`}
         </div>`).join('')}
@@ -339,9 +339,9 @@ const DEMOS = {
   power: () => `
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem">
       ${[['🥖','🥖','Baguette ×2','Détruit une case ennemie définitivement','#c84040'],
-         ['🧀','🧀','Fromage ×2','Bloque une case vide définitivement','#b08020'],
+         ['🧀','🧀','Fromage ×2','Bloque une case vide définitivement','#596477'],
          ['🖌️','🖌️','Pinceau ×2','Retire la tuile du dessus d\'un ennemi','#5c9bd6'],
-         ['🥐','🥐','Croissant','Pioche 3 cartes immédiatement','#c87030']].map(([ref,ico,nom,desc,clr])=>`
+         ['🥐','🥐','Croissant','Pioche 3 cartes immédiatement','#6b778d']].map(([ref,ico,nom,desc,clr])=>`
         <div style="background:rgba(255,255,255,0.03);border:1px solid ${clr}44;border-radius:7px;padding:0.6rem">
           <div style="display:flex;align-items:center;gap:5px;margin-bottom:3px">
             <span style="font-family:var(--font-ui);font-size:0.7rem;font-weight:700;color:${clr}">${ref}</span>
@@ -353,7 +353,7 @@ const DEMOS = {
     </div>`,
 
   event: () => `
-    <div style="background:#0a0602;border:1px solid rgba(200,150,12,0.3);border-radius:8px;padding:0.8rem">
+    <div style="background:#050607;border:1px solid rgba(200,150,12,0.3);border-radius:8px;padding:0.8rem">
       <div style="display:flex;align-items:center;gap:0.8rem;margin-bottom:0.6rem">
         <div style="font-size:2rem;flex-shrink:0">🎯</div>
         <div>
@@ -372,14 +372,14 @@ const DEMOS = {
       <div style="text-align:center">
         <div style="font-size:0.9rem;color:var(--dim);margin-bottom:6px">Cartes en main</div>
         <div style="display:flex;gap:4px">
-          ${['3','2','1','🏗','5'].map(v=>`<div style="width:28px;height:38px;border-radius:4px;border:1px solid #5a3d0a;background:#2a1808;display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:700;color:#f5c87a">${v}</div>`).join('')}
+          ${['3','2','1','🏗','5'].map(v=>`<div style="width:28px;height:38px;border-radius:4px;border:1px solid #5a3d0a;background:#14181e;display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:700;color:#f5c87a">${v}</div>`).join('')}
         </div>
       </div>
       <div style="font-size:1.5rem;color:var(--or)">⏭</div>
       <div style="text-align:center">
         <div style="font-size:0.9rem;color:var(--dim);margin-bottom:6px">Nouvelles cartes</div>
         <div style="display:flex;gap:4px">
-          ${['?','?','?','?','?'].map(v=>`<div style="width:28px;height:38px;border-radius:4px;border:1px solid #5a3d0a;background:#2a1808;display:flex;align-items:center;justify-content:center;font-size:0.75rem;color:#7a5828">${v}</div>`).join('')}
+          ${['?','?','?','?','?'].map(v=>`<div style="width:28px;height:38px;border-radius:4px;border:1px solid #5a3d0a;background:#14181e;display:flex;align-items:center;justify-content:center;font-size:0.75rem;color:#464e5c">${v}</div>`).join('')}
         </div>
       </div>
     </div>
@@ -392,15 +392,15 @@ const DEMOS = {
         <span style="font-size:0.8rem;color:var(--text)">Cases centrales — anneau doré épais — <b>3 pts</b> chacune</span>
       </div>
       <div style="display:flex;gap:6px;align-items:center">
-        <div style="width:36px;height:36px;border-radius:4px;border:1.5px solid rgba(200,150,12,0.35);background:rgba(200,150,12,0.04);display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:#a07828;font-family:var(--font-ui)">2pts</div>
+        <div style="width:36px;height:36px;border-radius:4px;border:1.5px solid rgba(200,150,12,0.35);background:rgba(200,150,12,0.04);display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:#566072;font-family:var(--font-ui)">2pts</div>
         <span style="font-size:0.8rem;color:var(--text)">Anneau intermédiaire — anneau doré léger — <b>2 pts</b></span>
       </div>
       <div style="display:flex;gap:6px;align-items:center">
-        <div style="width:36px;height:36px;border-radius:4px;border:1px solid #361e0c;background:#4e3018;display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:#7a5828;font-family:var(--font-ui)">1pt</div>
+        <div style="width:36px;height:36px;border-radius:4px;border:1px solid #1a1f28;background:#29303d;display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:#464e5c;font-family:var(--font-ui)">1pt</div>
         <span style="font-size:0.8rem;color:var(--text)">Périphérie — case normale — <b>1 pt</b></span>
       </div>
       <div style="display:flex;gap:6px;align-items:center;margin-top:4px">
-        ${[['🌾','Grenier','#c8a820'],['🏰','Citadelle','#8060c0'],['📖','Biblio.','#6080c0']].map(([ico,n,col])=>`
+        ${[['🌾','Grenier','#647084'],['🏰','Citadelle','#8060c0'],['📖','Biblio.','#6080c0']].map(([ico,n,col])=>`
           <div style="display:flex;flex-direction:column;align-items:center;gap:2px;border:1px solid ${col};border-radius:6px;padding:4px 6px;background:${col}18;min-width:52px">
             <span style="font-size:1.1rem">${ico}</span>
             <span style="font-size:0.6rem;color:${col};font-family:var(--font-ui)">${n}</span>
